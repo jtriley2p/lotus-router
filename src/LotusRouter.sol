@@ -31,7 +31,7 @@ import { Ptr, findPtr } from "src/types/PayloadPointer.sol";
 // | I am free for modification.                                               |
 // | I am free for redistribution.                                             |
 // |                                                                           |
-// | I ask only that you retain the license of freedom software.               |
+// | I ask only that redistributions of me bear the same license.              |
 // |                                                                           |
 // |                                ___                                        |
 // |                          ___  / | \  ___                                  |
@@ -45,23 +45,30 @@ import { Ptr, findPtr } from "src/types/PayloadPointer.sol";
 // |                    '--___      '-'      ___--'                            |
 // |                          '----_____----'                                  |
 // +---------------------------------------------------------------------------+
+
+/// @title Lotus Router
+/// @author Nameless Researchers and Developers of Ethereum
 contract LotusRouter {
+    // ## Fallback Function
+    //
+    // This contains all of the Lotus Router's execution logic.
+    //
+    // We use the fallback function to eschew Solidity's cannonical encoding
+    // scheme. Documentation will be provided for interfacing with this safely.
+    //
+    // > TODO: Provide documentation for interfacing with this safely.
     fallback() external payable {
-        unchecked {
-            Ptr ptr = findPtr();
+        Ptr ptr = findPtr();
+        bool success = true;
 
-            while (true) {
-                Action action;
+        while (success) {
+            Action action;
 
-                (ptr, action) = ptr.nextAction();
+            (ptr, action) = ptr.nextAction();
 
-                if (action == Action.Halt) {
-                    break;
-                }
+            if (action == Action.Halt) break;
 
-                // TODO: draw the rest of the owl
-                break;
-            }
+            (ptr, success) = action.execute(ptr);
         }
     }
 
