@@ -36,9 +36,7 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         (ptr, pair, amount0Out, amount1Out, to, data) = BBCDecoder.decodeSwapUniv2(ptr);
 
         success = pair.swap(amount0Out, amount1Out, to, data);
-    }
-
-    else {
+    } else {
         success = false;
     }
 

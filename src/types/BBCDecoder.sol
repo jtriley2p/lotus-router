@@ -27,14 +27,20 @@ library BBCDecoder {
     uint256 internal constant u8Shr = 0xf8;
     uint256 internal constant u32Shr = 0xe0;
 
-    function decodeSwapUniv2(Ptr ptr) internal pure returns (
-        Ptr nextPtr,
-        UniV2Pair pair,
-        uint256 amount0Out,
-        uint256 amount1Out,
-        address to,
-        BytesCalldata data
-    ) {
+    function decodeSwapUniv2(
+        Ptr ptr
+    )
+        internal
+        pure
+        returns (
+            Ptr nextPtr,
+            UniV2Pair pair,
+            uint256 amount0Out,
+            uint256 amount1Out,
+            address to,
+            BytesCalldata data
+        )
+    {
         assembly {
             let nextByteLen, nextBitShift
 
