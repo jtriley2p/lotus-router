@@ -3,7 +3,7 @@ pragma solidity 0.8.19;
 
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
-import { UniV2Pair } from "src/types/UniV2Pair.sol";
+import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 
 // ## Decoder
 //
