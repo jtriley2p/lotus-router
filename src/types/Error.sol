@@ -3,4 +3,5 @@ pragma solidity 0.8.19;
 
 library Error {
     error UnexpectedEntryPoint();
+    error CallFailure();
 }

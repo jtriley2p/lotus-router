@@ -70,6 +70,8 @@ contract LotusRouter {
 
             (ptr, success) = action.execute(ptr);
         }
+
+        if (!success) revert Error.CallFailure();
     }
 
     // ## Receiver Function
