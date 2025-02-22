@@ -65,43 +65,8 @@ Batchable actions:
 - [ ] Wrap WETH
 - [ ] Unwrap WETH
 
-## Open Design Questions
+Other features:
 
-Should we treat the pointer `Ptr` as the central component in the router?
-Or should we treat all unpacked addresses as the central components?
-
-That is to say, we can continuously increment the pointer on each action,
-comparable to the pseudocode as follows:
-
-```
-let ptr
-
-let (ptr, action) = ptr.loadAction();
-
-if action == Action.UniV2Swap {
-    let (ptr, success) = ptr.callUniV2Swap();
-}
-
-// -- snip
-```
-
-Or should it be independent of the pointer, comparable to the pseudocode as
-follows:
-
-```
-let ptr
-
-let (ptr, action) = ptr.loadAction();
-
-if action == Action.UniV2Swap {
-    let (ptr, pair) = ptr.loadWord();
-    let (ptr, amount0Out) = ptr.loadWord();
-    let (ptr, amount1Out) = ptr.loadWord();
-    let (ptr, to) = ptr.loadWord();
-    let (ptr, dataPtr) = ptr.loadWord();
-
-    let success = pair.swap(amout0Out, amoutn1Out, to, dataPtr);
-}
-
-// -- snip
-```
+- [ ] Unconventional Encoder/Decoder (inspired by bigbrainchad.eth)
+- [ ] Transient storage call stack constraints (inspired by bigbrainchad.eth)
+- [ ] Virtual Machine Style Architecture (inspired by, yes, bigbrainchad.eth)
