@@ -3,4 +3,8 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+[fmt]
+multiline_func_header = "params_first"
+sort_imports = true
+line_length = 100
+bracket_spacing = true

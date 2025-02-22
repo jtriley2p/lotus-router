@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.19;
 
-import {Action} from "src/types/Action.sol";
-import {Error} from "src/types/Error.sol";
-import {Ptr, findPtr} from "src/types/PayloadPointer.sol";
+import { Action } from "src/types/Action.sol";
+import { Error } from "src/types/Error.sol";
+import { Ptr, findPtr } from "src/types/PayloadPointer.sol";
 
 // +---------------------------------------------------------------------------+
 // | ## The Lotus Router Manifesto                                             |
@@ -69,5 +69,5 @@ contract LotusRouter {
     //
     // This triggers when this contract is called with no calldata. It takes no
     // action, it only returns gracefully.
-    receive() external payable {}
+    receive() external payable { }
 }

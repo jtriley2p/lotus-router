@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.19;
 
-import {Action} from "src/types/Action.sol";
-import {Error} from "src/types/Error.sol";
+import { Action } from "src/types/Action.sol";
+import { Error } from "src/types/Error.sol";
 
 type Ptr is uint256;
 
-using {nextWord, nextAction} for Ptr global;
+using { nextWord, nextAction } for Ptr global;
 
 uint256 constant callLotusRouter = 0xe7d751b5;
 uint256 constant uniswapV2Call = 0x10d1e85c;
@@ -88,7 +88,9 @@ function nextWord(Ptr ptr, uint8 byteLen) pure returns (Ptr, uint256 word) {
 // ## Notes
 //
 // The `ptr` parameter is incremented in place to allow continuous parsing.
-function nextAction(Ptr ptr) pure returns (Ptr, Action action) {
+function nextAction(
+    Ptr ptr
+) pure returns (Ptr, Action action) {
     assembly {
         action := shr(0xf8, calldataload(ptr))
 
