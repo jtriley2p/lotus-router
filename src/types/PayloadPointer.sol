@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.19;
 
-import { Action } from "src/types/Action.sol";
-import { Error } from "src/types/Error.sol";
+import {Action} from "src/types/Action.sol";
+import {Error} from "src/types/Error.sol";
 
 type Ptr is uint256;
 
-using { nextWord, nextAction } for Ptr global;
+using {nextWord, nextAction} for Ptr global;
 
 uint256 constant callLotusRouter = 0xe7d751b5;
 uint256 constant uniswapV2Call = 0x10d1e85c;
@@ -32,12 +32,14 @@ uint256 constant uniswapV2Call = 0x10d1e85c;
 function findPtr() pure returns (Ptr) {
     uint256 selector = uint256(uint32(msg.sig));
 
-    if (selector == callLotusRouter)
+    if (selector == callLotusRouter) {
         return Ptr.wrap(0x04);
-    if (selector == uniswapV2Call)
+    }
+    if (selector == uniswapV2Call) {
         return Ptr.wrap(0xa4);
-    else
+    } else {
         revert Error.UnexpectedEntryPoint();
+    }
 }
 
 // ## Loads the Next Calldata Word

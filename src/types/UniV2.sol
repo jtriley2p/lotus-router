@@ -3,7 +3,7 @@ pragma solidity 0.8.19;
 
 type UniV2Pair is address;
 
-using { swap } for UniV2Pair global;
+using {swap} for UniV2Pair global;
 
 // keccak256("swap(uint256,uint256,address,bytes)")
 uint256 constant swapSelector = 0x022c0d9f00000000000000000000000000000000000000000000000000000000;
@@ -40,13 +40,9 @@ uint256 constant swapSelector = 0x022c0d9f00000000000000000000000000000000000000
 // 8. Copy the data from calldata to memory.
 // 9. Call the `pair` contract, returning `success` to the caller of this
 //    function.
-function swap(
-    UniV2Pair pair,
-    uint256 amount0Out,
-    uint256 amount1Out,
-    address to,
-    bytes calldata data
-) returns (bool success) {
+function swap(UniV2Pair pair, uint256 amount0Out, uint256 amount1Out, address to, bytes calldata data)
+    returns (bool success)
+{
     assembly ("memory-safe") {
         let ptr := mload(0x40)
 

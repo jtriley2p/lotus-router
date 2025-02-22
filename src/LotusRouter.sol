@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.19;
 
-import { Action } from "src/types/Action.sol";
-import { Error } from "src/types/Error.sol";
-import { Ptr, findPtr } from "src/types/PayloadPointer.sol";
+import {Action} from "src/types/Action.sol";
+import {Error} from "src/types/Error.sol";
+import {Ptr, findPtr} from "src/types/PayloadPointer.sol";
 
 // +---------------------------------------------------------------------------+
 // | ## The Lotus Router Manifesto                                             |
@@ -55,8 +55,9 @@ contract LotusRouter {
 
                 (ptr, action) = ptr.nextAction();
 
-                if (action == Action.Halt)
+                if (action == Action.Halt) {
                     break;
+                }
 
                 // TODO: draw the rest of the owl
                 break;
