@@ -1,6 +1,6 @@
 # Lotus Router
 
-A free and open source, dynamic, extensible router smart contract.
+A free and open source, reasonably optimized router smart contract.
 
 Built with experience from the frontier, with solidarity for developers of
 sovereignity, and with a love for democratization of knowledge and software.
