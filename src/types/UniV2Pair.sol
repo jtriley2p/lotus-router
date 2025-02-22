@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.19;
 
+import { BytesCalldata } from "src/types/BytesCalldata.sol";
+
 type UniV2Pair is address;
 
 using { swap } for UniV2Pair global;
@@ -30,25 +32,31 @@ uint256 constant swapSelector = 0x022c0d9f00000000000000000000000000000000000000
 //
 // ## Procedures
 //
-// 1. Load the free memory pointer.
-// 2. Store the `swapSelector`.
-// 3. Store the `amount0Out` argument.
-// 4. Store the `amount1Out` argument.
-// 5. Store the `to` argument.
-// 6. Store the `data.offset`, relative to the slot after the selector.
-// 7. Store the `data.length`.
-// 8. Copy the data from calldata to memory.
-// 9. Call the `pair` contract, returning `success` to the caller of this
+// 01. Load the free memory pointer.
+// 02. Load the `data` length as a 32 bit integer.
+// 03. Increment the `data` pointer to the beginning of the bytes.
+// 04. Store the `swapSelector`.
+// 05. Store the `amount0Out` argument.
+// 06. Store the `amount1Out` argument.
+// 07. Store the `to` argument.
+// 08. Store the `data` offset, relative to the slot after the selector.
+// 09. Store the `dataLen`.
+// 10. Copy the data from calldata to memory.
+// 11. Call the `pair` contract, returning `success` to the caller of this
 //    function.
 function swap(
     UniV2Pair pair,
     uint256 amount0Out,
     uint256 amount1Out,
     address to,
-    bytes calldata data
+    BytesCalldata data
 ) returns (bool success) {
     assembly ("memory-safe") {
         let ptr := mload(0x40)
+
+        let dataLen := shr(0xe0, calldataload(data))
+
+        data := add(data, 0x04)
 
         mstore(add(0x00, ptr), swapSelector)
 
@@ -60,10 +68,10 @@ function swap(
 
         mstore(add(0x64, ptr), 0x80)
 
-        mstore(add(0x84, ptr), data.length)
+        mstore(add(0x84, ptr), dataLen)
 
-        calldatacopy(add(0xa4, ptr), data.offset, data.length)
+        calldatacopy(add(0xa4, ptr), data, dataLen)
 
-        success := call(gas(), pair, 0x00, ptr, add(0xc4, data.length), 0x00, 0x00)
+        success := call(gas(), pair, 0x00, ptr, add(0xc4, dataLen), 0x00, 0x00)
     }
 }
