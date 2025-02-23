@@ -51,12 +51,9 @@ the public blockchains.
 
 Batchable actions:
 
-- [ ] Uniswap V2 Swap Exact In
-- [ ] Uniswap V2 Swap Exact Out
-- [ ] Uniswap V3 Swap Exact In
-- [ ] Uniswap V3 Swap Exact Out
-- [ ] Uniswap V4 Swap Exact In
-- [ ] Uniswap V4 Swap Exact Out
+- [x] Uniswap V2 Swap
+- [ ] Uniswap V3 Swap
+- [ ] Uniswap V4 Swap
 - [ ] ERC20 Transfer
 - [ ] ERC20 TransferFrom
 - [ ] ERC721 TransferFrom
@@ -67,6 +64,6 @@ Batchable actions:
 
 Other features:
 
-- [ ] Unconventional Encoder/Decoder (inspired by bigbrainchad.eth)
+- [x] Unconventional Encoder/Decoder (inspired by bigbrainchad.eth)
 - [ ] Transient storage call stack constraints (inspired by bigbrainchad.eth)
-- [ ] Virtual Machine Style Architecture (inspired by, yes, bigbrainchad.eth)
+- [x] Virtual Machine Style Architecture (inspired by, yes, bigbrainchad.eth)
