@@ -8,7 +8,7 @@ type Ptr is uint256;
 
 using { nextWord, nextAction } for Ptr global;
 
-uint256 constant callLotusRouter = 0xe7d751b5;
+uint256 constant takeAction = 0x19ff8034;
 uint256 constant uniswapV2Call = 0x10d1e85c;
 
 // ## Finds the Payload Pointer
@@ -32,7 +32,7 @@ uint256 constant uniswapV2Call = 0x10d1e85c;
 function findPtr() pure returns (Ptr) {
     uint256 selector = uint256(uint32(msg.sig));
 
-    if (selector == callLotusRouter) {
+    if (selector == takeAction) {
         return Ptr.wrap(0x04);
     }
     if (selector == uniswapV2Call) {
