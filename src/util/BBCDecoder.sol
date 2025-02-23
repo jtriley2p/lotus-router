@@ -34,6 +34,7 @@ library BBCDecoder {
         pure
         returns (
             Ptr nextPtr,
+            bool canFail,
             UniV2Pair pair,
             uint256 amount0Out,
             uint256 amount1Out,
@@ -43,8 +44,11 @@ library BBCDecoder {
     {
         assembly {
             let nextByteLen, nextBitShift
-
             nextPtr := ptr
+
+            canFail := shr(0xf8, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, 0x01)
             nextByteLen := shr(u8Shr, calldataload(nextPtr))
             nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
             nextPtr := add(nextPtr, 0x01)
