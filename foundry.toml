@@ -3,7 +3,7 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
-optimizer_runs = 100
+optimizer_runs = 0xffffffff
 via_ir = true
 
 [fmt]
