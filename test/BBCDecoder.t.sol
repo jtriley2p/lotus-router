@@ -45,9 +45,6 @@ contract BBCDecoderTest is Test {
             bytes memory data
         ) = decoder.decodeSwapUniV2(encoded);
 
-        emit log_bytes(data);
-        emit log_bytes(expectedData);
-
         assertEq(canFail, expectedCanFail);
         assertEq(UniV2Pair.unwrap(pair), expectedPair);
         assertEq(amount0Out, expectedAmount0Out);
