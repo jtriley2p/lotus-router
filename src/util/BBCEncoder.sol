@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.19;
+pragma solidity 0.8.28;
 
 import { Action } from "src/types/Action.sol";
 
@@ -110,8 +110,8 @@ library BBCEncoder {
     function byteLen(
         uint256 word
     ) internal pure returns (uint8) {
-        for (uint8 i = 255; i >= 0; i--) {
-            if (word >> i != 0) return i / 8 + 1;
+        for (uint8 i = 32; i > 0; i--) {
+            if (word >> ((i - 1) * 8) != 0) return i;
         }
 
         return 0;
@@ -122,8 +122,8 @@ library BBCEncoder {
     ) internal pure returns (uint8) {
         uint160 word = uint160(addr);
 
-        for (uint8 i = 159; i >= 0; i--) {
-            if (word >> i != 0) return i / 8 + 1;
+        for (uint8 i = 20; i > 0; i--) {
+            if (word >> ((i - 1) * 8) != 0) return i;
         }
 
         return 0;

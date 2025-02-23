@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.19;
+pragma solidity 0.8.28;
 
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
@@ -33,7 +33,7 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
 
         (ptr, canFail, pair, amount0Out, amount1Out, to, data) = BBCDecoder.decodeSwapUniV2(ptr);
 
-        success = canFail || pair.swap(amount0Out, amount1Out, to, data);
+        success = pair.swap(amount0Out, amount1Out, to, data) || canFail;
     } else {
         success = false;
     }

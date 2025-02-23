@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.19;
+pragma solidity 0.8.28;
 
 import { Action } from "src/types/Action.sol";
 import { Error } from "src/types/Error.sol";

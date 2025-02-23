@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity 0.8.19;
+pragma solidity 0.8.28;
 
 import { Test } from "lib/forge-std/src/Test.sol";
 import { BBCDecoderMock } from "test/mock/BBCDecoderMock.sol";
@@ -19,7 +19,7 @@ contract BBCDecoderTest is Test {
         decoder = new BBCDecoderMock();
     }
 
-    function testDecodeSwapUniV2() public {
+    function testDecodeSwapUniV2() public view {
         bool expectedCanFail = true;
         address expectedPair = address(0xaabbccdd);
         uint8 expectedAmount0Out = 0x45;
