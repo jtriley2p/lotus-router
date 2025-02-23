@@ -31,7 +31,7 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         address to;
         BytesCalldata data;
 
-        (ptr, canFail, pair, amount0Out, amount1Out, to, data) = BBCDecoder.decodeSwapUniv2(ptr);
+        (ptr, canFail, pair, amount0Out, amount1Out, to, data) = BBCDecoder.decodeSwapUniV2(ptr);
 
         success = canFail || pair.swap(amount0Out, amount1Out, to, data);
     } else {

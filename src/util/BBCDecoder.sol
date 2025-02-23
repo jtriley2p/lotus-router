@@ -27,7 +27,7 @@ library BBCDecoder {
     uint256 internal constant u8Shr = 0xf8;
     uint256 internal constant u32Shr = 0xe0;
 
-    function decodeSwapUniv2(
+    function decodeSwapUniV2(
         Ptr ptr
     )
         internal
@@ -46,7 +46,7 @@ library BBCDecoder {
             let nextByteLen, nextBitShift
             nextPtr := ptr
 
-            canFail := shr(0xf8, calldataload(nextPtr))
+            canFail := shr(u8Shr, calldataload(nextPtr))
 
             nextPtr := add(nextPtr, 0x01)
             nextByteLen := shr(u8Shr, calldataload(nextPtr))
