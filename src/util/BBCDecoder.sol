@@ -81,6 +81,8 @@ library BBCDecoder {
 
             data := nextPtr
 
+            nextPtr := add(nextPtr, 0x04)
+
             nextPtr := add(nextPtr, nextByteLen)
         }
     }
