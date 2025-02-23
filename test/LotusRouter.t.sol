@@ -1,23 +1,20 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.28;
 
-import {Test} from "lib/forge-std/src/Test.sol";
-import {UniV2PairMock} from "test/mock/UniV2PairMock.sol";
+import { Test } from "lib/forge-std/src/Test.sol";
+import { UniV2PairMock } from "test/mock/UniV2PairMock.sol";
 
-import {LotusRouter} from "src/LotusRouter.sol";
-import {BBCEncoder} from "src/util/BBCEncoder.sol";
+import { LotusRouter } from "src/LotusRouter.sol";
+import { BBCEncoder } from "src/util/BBCEncoder.sol";
 
-function takeAction(
-    LotusRouter lotus,
-    bytes memory data
-) returns (bool success) {
+function takeAction(LotusRouter lotus, bytes memory data) returns (bool success) {
     bytes memory payload = abi.encodePacked(uint32(0x19ff8034), data);
 
-    (success, ) = address(lotus).call(payload);
+    (success,) = address(lotus).call(payload);
 }
 
 contract LotusRouterTest is Test {
-    using {takeAction} for LotusRouter;
+    using { takeAction } for LotusRouter;
 
     LotusRouter lotus;
     UniV2PairMock univ2_0;
@@ -37,22 +34,11 @@ contract LotusRouterTest is Test {
         bytes memory data = hex"bbbb";
 
         vm.expectCall(
-            address(univ2_0),
-            abi.encodeCall(
-                UniV2PairMock.swap,
-                (amount0Out, amount1Out, to, data)
-            )
+            address(univ2_0), abi.encodeCall(UniV2PairMock.swap, (amount0Out, amount1Out, to, data))
         );
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeSwapUniV2(
-                canFail,
-                address(univ2_0),
-                amount0Out,
-                amount1Out,
-                to,
-                data
-            )
+            BBCEncoder.encodeSwapUniV2(canFail, address(univ2_0), amount0Out, amount1Out, to, data)
         );
 
         assertTrue(success);
@@ -73,37 +59,21 @@ contract LotusRouterTest is Test {
 
         vm.expectCall(
             address(univ2_0),
-            abi.encodeCall(
-                UniV2PairMock.swap,
-                (amount0Out_0, amount1Out_0, to_0, data_0)
-            )
+            abi.encodeCall(UniV2PairMock.swap, (amount0Out_0, amount1Out_0, to_0, data_0))
         );
 
         vm.expectCall(
             address(univ2_1),
-            abi.encodeCall(
-                UniV2PairMock.swap,
-                (amount0Out_1, amount1Out_1, to_1, data_1)
-            )
+            abi.encodeCall(UniV2PairMock.swap, (amount0Out_1, amount1Out_1, to_1, data_1))
         );
 
         bool success = lotus.takeAction(
             abi.encodePacked(
                 BBCEncoder.encodeSwapUniV2(
-                    canFail,
-                    address(univ2_0),
-                    amount0Out_0,
-                    amount1Out_0,
-                    to_0,
-                    data_0
+                    canFail, address(univ2_0), amount0Out_0, amount1Out_0, to_0, data_0
                 ),
                 BBCEncoder.encodeSwapUniV2(
-                    canFail,
-                    address(univ2_1),
-                    amount0Out_1,
-                    amount1Out_1,
-                    to_1,
-                    data_1
+                    canFail, address(univ2_1), amount0Out_1, amount1Out_1, to_1, data_1
                 )
             )
         );
@@ -121,14 +91,7 @@ contract LotusRouterTest is Test {
         univ2_0.setShouldThrow(true);
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeSwapUniV2(
-                canFail,
-                address(univ2_0),
-                amount0Out,
-                amount1Out,
-                to,
-                data
-            )
+            BBCEncoder.encodeSwapUniV2(canFail, address(univ2_0), amount0Out, amount1Out, to, data)
         );
 
         assertFalse(success);
@@ -153,30 +116,17 @@ contract LotusRouterTest is Test {
         // circuit this
         vm.expectCall(
             address(univ2_1),
-            abi.encodeCall(
-                UniV2PairMock.swap,
-                (amount0Out_1, amount1Out_1, to_1, data_1)
-            ),
+            abi.encodeCall(UniV2PairMock.swap, (amount0Out_1, amount1Out_1, to_1, data_1)),
             0
         );
 
         bool success = lotus.takeAction(
             abi.encodePacked(
                 BBCEncoder.encodeSwapUniV2(
-                    canFail,
-                    address(univ2_0),
-                    amount0Out_0,
-                    amount1Out_0,
-                    to_0,
-                    data_0
+                    canFail, address(univ2_0), amount0Out_0, amount1Out_0, to_0, data_0
                 ),
                 BBCEncoder.encodeSwapUniV2(
-                    canFail,
-                    address(univ2_1),
-                    amount0Out_1,
-                    amount1Out_1,
-                    to_1,
-                    data_1
+                    canFail, address(univ2_1), amount0Out_1, amount1Out_1, to_1, data_1
                 )
             )
         );
@@ -192,22 +142,11 @@ contract LotusRouterTest is Test {
         bytes memory data
     ) public {
         vm.expectCall(
-            address(univ2_0),
-            abi.encodeCall(
-                UniV2PairMock.swap,
-                (amount0Out, amount1Out, to, data)
-            )
+            address(univ2_0), abi.encodeCall(UniV2PairMock.swap, (amount0Out, amount1Out, to, data))
         );
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeSwapUniV2(
-                canFail,
-                address(univ2_0),
-                amount0Out,
-                amount1Out,
-                to,
-                data
-            )
+            BBCEncoder.encodeSwapUniV2(canFail, address(univ2_0), amount0Out, amount1Out, to, data)
         );
 
         assertTrue(success || canFail);
@@ -224,38 +163,18 @@ contract LotusRouterTest is Test {
         // smth's up w the fuzzer; vm.expectCall fails, vm.expectEmit does not..
         // all data's the same tho?
         vm.expectEmit(true, true, true, true, address(univ2_0));
-        emit UniV2PairMock.Swap(
-            amount0Out_0,
-            amount1Out_0,
-            address(univ2_1),
-            data_0
-        );
+        emit UniV2PairMock.Swap(amount0Out_0, amount1Out_0, address(univ2_1), data_0);
 
         vm.expectEmit(true, true, true, true, address(univ2_1));
-        emit UniV2PairMock.Swap(
-            amount0Out_1,
-            amount1Out_1,
-            address(lotus),
-            data_1
-        );
+        emit UniV2PairMock.Swap(amount0Out_1, amount1Out_1, address(lotus), data_1);
 
         bool success = lotus.takeAction(
             abi.encodePacked(
                 BBCEncoder.encodeSwapUniV2(
-                    false,
-                    address(univ2_0),
-                    amount0Out_0,
-                    amount1Out_0,
-                    address(univ2_1),
-                    data_0
+                    false, address(univ2_0), amount0Out_0, amount1Out_0, address(univ2_1), data_0
                 ),
                 BBCEncoder.encodeSwapUniV2(
-                    false,
-                    address(univ2_1),
-                    amount0Out_1,
-                    amount1Out_1,
-                    address(lotus),
-                    data_1
+                    false, address(univ2_1), amount0Out_1, amount1Out_1, address(lotus), data_1
                 )
             )
         );
