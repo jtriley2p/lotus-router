@@ -1,25 +1,33 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.19;
 
-import { BBCDecoder } from "src/util/BBCDecoder.sol";
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
+import { BBCDecoder } from "src/util/BBCDecoder.sol";
 
 contract BBCDecoderMock {
-    function decodeSwapUniV2(bytes calldata encoded) public pure returns (
-        bool canFail,
-        UniV2Pair pair,
-        uint256 amount0Out,
-        uint256 amount1Out,
-        address to,
-        bytes memory data
-    ) {
+    function decodeSwapUniV2(
+        bytes calldata encoded
+    )
+        public
+        pure
+        returns (
+            bool canFail,
+            UniV2Pair pair,
+            uint256 amount0Out,
+            uint256 amount1Out,
+            address to,
+            bytes memory data
+        )
+    {
         Ptr ptr;
         BytesCalldata packedData;
 
         // add 0x01 bc the first byte is the `Action` opcode, it's not decoded
-        assembly { ptr := add(0x01, encoded.offset) }
+        assembly {
+            ptr := add(0x01, encoded.offset)
+        }
 
         (, canFail, pair, amount0Out, amount1Out, to, packedData) = BBCDecoder.decodeSwapUniV2(ptr);
 

@@ -107,7 +107,9 @@ library BBCEncoder {
         return encoded;
     }
 
-    function byteLen(uint256 word) internal pure returns (uint8) {
+    function byteLen(
+        uint256 word
+    ) internal pure returns (uint8) {
         for (uint8 i = 255; i >= 0; i--) {
             if (word >> i != 0) return i / 8 + 1;
         }
@@ -115,7 +117,9 @@ library BBCEncoder {
         return 0;
     }
 
-    function byteLen(address addr) internal pure returns (uint8) {
+    function byteLen(
+        address addr
+    ) internal pure returns (uint8) {
         uint160 word = uint160(addr);
 
         for (uint8 i = 159; i >= 0; i--) {

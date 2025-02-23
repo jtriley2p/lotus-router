@@ -6,10 +6,11 @@ import { BBCDecoderMock } from "test/mock/BBCDecoderMock.sol";
 
 import { Action } from "src/types/Action.sol";
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
-import { BBCDecoder } from "src/util/BBCDecoder.sol";
-import { BBCEncoder } from "src/util/BBCEncoder.sol";
+
 import { Ptr } from "src/types/PayloadPointer.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
+import { BBCDecoder } from "src/util/BBCDecoder.sol";
+import { BBCEncoder } from "src/util/BBCEncoder.sol";
 
 contract BBCDecoderTest is Test {
     BBCDecoderMock decoder;

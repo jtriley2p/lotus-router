@@ -3,8 +3,8 @@ pragma solidity 0.8.19;
 
 import { Test } from "lib/forge-std/src/Test.sol";
 
-import { BBCEncoder } from "src/util/BBCEncoder.sol";
 import { Action } from "src/types/Action.sol";
+import { BBCEncoder } from "src/util/BBCEncoder.sol";
 
 contract BBCEncoderTest is Test {
     function testEncodeSwapUniV2() public view {
@@ -24,14 +24,8 @@ contract BBCEncoderTest is Test {
 
         bytes memory data = hex"deadbeef";
 
-        bytes memory encoded = BBCEncoder.encodeSwapUniV2(
-            canFail,
-            pair,
-            amount0Out,
-            amount1Out,
-            to,
-            data
-        );
+        bytes memory encoded =
+            BBCEncoder.encodeSwapUniV2(canFail, pair, amount0Out, amount1Out, to, data);
 
         bytes memory expected = abi.encodePacked(
             uint8(Action.UniV2Swap),
