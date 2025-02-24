@@ -107,7 +107,7 @@ contract BBCDecoderTest is Test {
         assertEq(amount, expectedAmount);
     }
 
-    function testDecodeTransferERC20(
+    function tesFuzzDecodeTransferERC20(
         bool expectedCanFail,
         address expectedToken,
         address expectedReceiver,
