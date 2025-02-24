@@ -122,6 +122,8 @@ library BBCDecoder {
             nextPtr := add(nextPtr, 0x01)
 
             amount := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
         }
     }
 
@@ -172,6 +174,8 @@ library BBCDecoder {
             nextPtr := add(nextPtr, 0x01)
 
             amount := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
         }
     }
 }

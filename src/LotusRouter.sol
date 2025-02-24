@@ -66,12 +66,12 @@ contract LotusRouter {
 
             (ptr, action) = ptr.nextAction();
 
-            if (action == Action.Halt) break;
+            if (action == Action.Halt) return;
 
             (ptr, success) = action.execute(ptr);
         }
 
-        if (!success) revert Error.CallFailure();
+        revert Error.CallFailure();
     }
 
     // ## Receiver Function

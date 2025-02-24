@@ -3,6 +3,8 @@ pragma solidity 0.8.28;
 
 type ERC20 is address;
 
+using { transfer, transferFrom } for ERC20 global;
+
 uint256 constant transferSelector =
     0xa9059cbb00000000000000000000000000000000000000000000000000000000;
 uint256 constant transferFromSelector =
@@ -32,10 +34,7 @@ uint256 constant transferFromSelector =
 // overall memory allocations. However, it's worth noting that doing this
 // occupies the first 68 bytes, which overwrites the first four bytes of memory
 // slot `0x40`, which contains the free memory pointer. So we overwrite these
-// upper bytes at the end to ensure the free memory pointer is correct. Also,
-// the free memory pointer will never occupy those bytes, so we're chilling. Idk
-// if this makes not "memory-safe" though, so we omit this to ensure no
-// undefined behavior for now.
+// upper bytes at the end to ensure the free memory pointer is correct.
 //
 // ### Procedures
 //
@@ -48,7 +47,7 @@ uint256 constant transferFromSelector =
 // 06. Logical AND the success conditions.
 // 07. Store zero to restore the upper bytes of the free memory pointer to zero.
 function transfer(ERC20 token, address receiver, uint256 amount) returns (bool success) {
-    assembly {
+    assembly ("memory-safe") {
         mstore(0x00, transferSelector)
 
         mstore(0x04, receiver)
@@ -57,7 +56,7 @@ function transfer(ERC20 token, address receiver, uint256 amount) returns (bool s
 
         success := call(gas(), token, 0x00, 0x00, 0x44, 0x00, 0x20)
 
-        let successERC20 := or(iszero(calldatasize()), mload(0x00))
+        let successERC20 := or(iszero(calldatasize()), iszero(iszero(mload(0x00))))
 
         success := and(success, successERC20)
 
@@ -91,9 +90,6 @@ function transfer(ERC20 token, address receiver, uint256 amount) returns (bool s
 // occupies the first 100 bytes, which overwrites the free memory pointer and
 // the first four bytes of the zero slot `0x60`. So we overwrite these upper
 // bytes at the end to ensure the free memory pointer and zero slot are correct.
-// Also, the free memory pointer will never occupy those bytes, so we're
-// chilling. Idk if this makes not "memory-safe" though, so we omit this to
-// ensure no undefined behavior for now.
 //
 // ### Procedures
 //
@@ -114,7 +110,7 @@ function transferFrom(
     address receiver,
     uint256 amount
 ) returns (bool success) {
-    assembly {
+    assembly ("memory-safe") {
         let fmp := mload(0x40)
 
         mstore(0x00, transferFromSelector)

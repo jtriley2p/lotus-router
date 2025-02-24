@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
+import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
 
@@ -34,6 +35,15 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         (ptr, canFail, pair, amount0Out, amount1Out, to, data) = BBCDecoder.decodeSwapUniV2(ptr);
 
         success = pair.swap(amount0Out, amount1Out, to, data) || canFail;
+    } else if (action == Action.TransferERC20) {
+        bool canFail;
+        ERC20 token;
+        address receiver;
+        uint256 amount;
+
+        (ptr, canFail, token, receiver, amount) = BBCDecoder.decodeTransferERC20(ptr);
+
+        success = token.transfer(receiver, amount) || canFail;
     } else {
         success = false;
     }
