@@ -49,6 +49,40 @@ contract LotusRouterTest is Test {
         assertTrue(success);
     }
 
+    function testSwapUniV2SingleThrows() public {
+        bool canFail = false;
+        uint256 amount0Out = 0x01;
+        uint256 amount1Out = 0x02;
+        address to = address(0xaaaa);
+        bytes memory data = hex"bbbb";
+
+        univ2_0.setShouldThrow(true);
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeSwapUniV2(canFail, address(univ2_0), amount0Out, amount1Out, to, data)
+        );
+
+        assertFalse(success);
+    }
+
+    function testFuzzSwapUniV2Single(
+        bool canFail,
+        uint256 amount0Out,
+        uint256 amount1Out,
+        address to,
+        bytes memory data
+    ) public {
+        vm.expectCall(
+            address(univ2_0), abi.encodeCall(UniV2PairMock.swap, (amount0Out, amount1Out, to, data))
+        );
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeSwapUniV2(canFail, address(univ2_0), amount0Out, amount1Out, to, data)
+        );
+
+        assertTrue(success || canFail);
+    }
+
     function testSwapUniV2Chain() public {
         bool canFail = false;
 
@@ -84,22 +118,6 @@ contract LotusRouterTest is Test {
         );
 
         assertTrue(success);
-    }
-
-    function testSwapUniV2SingleThrows() public {
-        bool canFail = false;
-        uint256 amount0Out = 0x01;
-        uint256 amount1Out = 0x02;
-        address to = address(0xaaaa);
-        bytes memory data = hex"bbbb";
-
-        univ2_0.setShouldThrow(true);
-
-        bool success = lotus.takeAction(
-            BBCEncoder.encodeSwapUniV2(canFail, address(univ2_0), amount0Out, amount1Out, to, data)
-        );
-
-        assertFalse(success);
     }
 
     function testSwapUniV2ChainThrows() public {
@@ -139,24 +157,6 @@ contract LotusRouterTest is Test {
         assertFalse(success);
     }
 
-    function testFuzzSwapUniV2Single(
-        bool canFail,
-        uint256 amount0Out,
-        uint256 amount1Out,
-        address to,
-        bytes memory data
-    ) public {
-        vm.expectCall(
-            address(univ2_0), abi.encodeCall(UniV2PairMock.swap, (amount0Out, amount1Out, to, data))
-        );
-
-        bool success = lotus.takeAction(
-            BBCEncoder.encodeSwapUniV2(canFail, address(univ2_0), amount0Out, amount1Out, to, data)
-        );
-
-        assertTrue(success || canFail);
-    }
-
     function testFuzzSwapUniV2Chain(
         uint256 amount0Out_0,
         uint256 amount1Out_0,
@@ -187,7 +187,7 @@ contract LotusRouterTest is Test {
         assertTrue(success);
     }
 
-    function testTransferERC20() public {
+    function testTransferERC20Single() public {
         bool canFail = false;
         address receiver = address(0xaabbccdd);
         uint256 amount = 0x02;
@@ -204,7 +204,7 @@ contract LotusRouterTest is Test {
         assertTrue(success);
     }
 
-    function testTransferERC20ReturnsNothing() public {
+    function testTransferERC20SingleReturnsNothing() public {
         bool canFail = false;
         address receiver = address(0xaabbccdd);
         uint256 amount = 0x02;
@@ -223,7 +223,7 @@ contract LotusRouterTest is Test {
         assertTrue(success);
     }
 
-    function testTransferERC20Throws() public {
+    function testTransferERC20SingleThrows() public {
         bool canFail = false;
         address receiver = address(0xaabbccdd);
         uint256 amount = 0x02;
@@ -237,7 +237,7 @@ contract LotusRouterTest is Test {
         assertFalse(success);
     }
 
-    function testTransferERC20ReturnsFalse() public {
+    function testTransferERC20SingleReturnsFalse() public {
         bool canFail = false;
         address receiver = address(0xaabbccdd);
         uint256 amount = 0x02;
