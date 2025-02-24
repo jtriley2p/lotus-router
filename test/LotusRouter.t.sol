@@ -251,6 +251,34 @@ contract LotusRouterTest is Test {
         assertFalse(success);
     }
 
+    function testFuzzTransferERC20Single(
+        bool canFail,
+        bool shouldReturnAnything,
+        bool shouldThrow,
+        bool result,
+        address receiver,
+        uint256 amount
+    ) public {
+        erc20_0.setShouldReturnAnything(shouldReturnAnything);
+        erc20_0.setShouldThrow(shouldThrow);
+        erc20_0.setResult(result);
+
+        bool callSucceeds = !shouldThrow && (result || !shouldReturnAnything) || canFail;
+
+        if (callSucceeds) {
+            vm.expectCall(
+                address(erc20_0),
+                abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
+            );
+        }
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeTransferERC20(canFail, address(erc20_0), receiver, amount)
+        );
+
+        assertEq(success, callSucceeds);
+    }
+
     function testTransferERC20Chain() public {
         bool canFail = false;
 
@@ -363,5 +391,45 @@ contract LotusRouterTest is Test {
         );
 
         assertFalse(success);
+    }
+
+    function testFuzzTransferERC20Chain(
+        bool canFail,
+        bool shouldReturnAnything,
+        bool shouldThrow,
+        bool result,
+        address receiver,
+        uint256 amount
+    ) public {
+        erc20_0.setShouldReturnAnything(shouldReturnAnything);
+        erc20_0.setShouldThrow(shouldThrow);
+        erc20_0.setResult(result);
+
+        erc20_0.setShouldReturnAnything(shouldReturnAnything);
+        erc20_0.setShouldThrow(shouldThrow);
+        erc20_0.setResult(result);
+
+        bool callSucceeds = !shouldThrow && (result || !shouldReturnAnything) || canFail;
+
+        if (callSucceeds) {
+            vm.expectCall(
+                address(erc20_0),
+                abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
+            );
+
+            vm.expectCall(
+                address(erc20_1),
+                abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
+            );
+        }
+
+        bool success = lotus.takeAction(
+            abi.encodePacked(
+                BBCEncoder.encodeTransferERC20(canFail, address(erc20_0), receiver, amount),
+                BBCEncoder.encodeTransferERC20(canFail, address(erc20_1), receiver, amount)
+            )
+        );
+
+        assertEq(success, callSucceeds);
     }
 }
