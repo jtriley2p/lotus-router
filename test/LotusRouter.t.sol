@@ -26,7 +26,7 @@ contract LotusRouterTest is Test {
         univ2_1 = new UniV2PairMock();
     }
 
-    function testUniV2SwapSingle() public {
+    function testSwapUniV2Single() public {
         bool canFail = false;
         uint256 amount0Out = 0x01;
         uint256 amount1Out = 0x02;
@@ -44,7 +44,7 @@ contract LotusRouterTest is Test {
         assertTrue(success);
     }
 
-    function testUniV2SwapChain() public {
+    function testSwapUniV2Chain() public {
         bool canFail = false;
 
         uint256 amount0Out_0 = 0x01;
@@ -81,7 +81,7 @@ contract LotusRouterTest is Test {
         assertTrue(success);
     }
 
-    function testUniv2SwapSingleThrows() public {
+    function testSwapUniV2SingleThrows() public {
         bool canFail = false;
         uint256 amount0Out = 0x01;
         uint256 amount1Out = 0x02;
@@ -97,7 +97,7 @@ contract LotusRouterTest is Test {
         assertFalse(success);
     }
 
-    function testUniV2SwapChainThrows() public {
+    function testSwapUniV2ChainThrows() public {
         bool canFail = false;
 
         uint256 amount0Out_0 = 0x01;
@@ -134,7 +134,7 @@ contract LotusRouterTest is Test {
         assertFalse(success);
     }
 
-    function testFuzzUniV2SwapSingle(
+    function testFuzzSwapUniV2Single(
         bool canFail,
         uint256 amount0Out,
         uint256 amount1Out,
@@ -152,7 +152,7 @@ contract LotusRouterTest is Test {
         assertTrue(success || canFail);
     }
 
-    function testFuzzUniV2SwapChain(
+    function testFuzzSwapUniV2Chain(
         uint256 amount0Out_0,
         uint256 amount1Out_0,
         bytes memory data_0,

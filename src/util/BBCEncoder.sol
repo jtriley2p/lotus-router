@@ -43,7 +43,7 @@ library BBCEncoder {
         address to,
         bytes memory data
     ) internal view returns (bytes memory) {
-        Action action = Action.UniV2Swap;
+        Action action = Action.SwapUniV2;
         uint8 pairByteLen = byteLen(pair);
         uint8 amount0OutByteLen = byteLen(amount0Out);
         uint8 amount1OutByteLen = byteLen(amount1Out);

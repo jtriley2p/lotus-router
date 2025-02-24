@@ -8,14 +8,14 @@ import { BBCDecoder } from "src/util/BBCDecoder.sol";
 
 enum Action {
     Halt,
-    UniV2Swap,
-    UniV3Swap,
-    UniV4Swap,
-    ERC20Transfer,
-    ERC20TransferFrom,
-    ERC721TransferFrom,
-    ERC6909Transfer,
-    ERC6909TransferFrom,
+    SwapUniV2,
+    SwapUniV3,
+    SwapUniV4,
+    TransferERC20,
+    TransferFromERC20,
+    TransferFromERC721,
+    TransferERC6909,
+    TransferFromERC6909,
     WrapWETH,
     UnwrapWETH
 }
@@ -23,7 +23,7 @@ enum Action {
 using { execute } for Action global;
 
 function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
-    if (action == Action.UniV2Swap) {
+    if (action == Action.SwapUniV2) {
         bool canFail;
         UniV2Pair pair;
         uint256 amount0Out;

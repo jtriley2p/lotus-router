@@ -28,7 +28,7 @@ contract BBCEncoderTest is Test {
             BBCEncoder.encodeSwapUniV2(canFail, pair, amount0Out, amount1Out, to, data);
 
         bytes memory expected = abi.encodePacked(
-            uint8(Action.UniV2Swap),
+            uint8(Action.SwapUniV2),
             canFail,
             pairLen,
             uint32(uint160(pair)),
@@ -73,7 +73,7 @@ contract BBCEncoderTest is Test {
             canFail, address(pair), amount0Out, amount1Out, address(to), data
         );
 
-        bytes memory expected = abi.encodePacked(uint8(Action.UniV2Swap), canFail);
+        bytes memory expected = abi.encodePacked(uint8(Action.SwapUniV2), canFail);
 
         expected = __pack(expected, pairByteLen, pair);
         expected = __pack(expected, amount0OutByteLen, amount0Out);
