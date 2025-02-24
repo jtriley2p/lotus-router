@@ -52,4 +52,38 @@ contract BBCDecoderTest is Test {
         assertEq(to, expectedTo);
         assertEq(keccak256(data), keccak256(expectedData));
     }
+
+    function testFuzzDecodeSwapUniv2(
+        bool expectedCanFail,
+        address expectedPair,
+        uint8 expectedAmount0Out,
+        uint8 expectedAmount1Out,
+        address expectedTo,
+        bytes memory expectedData
+    ) public view {
+        bytes memory encoded = BBCEncoder.encodeSwapUniV2(
+            expectedCanFail,
+            expectedPair,
+            expectedAmount0Out,
+            expectedAmount1Out,
+            expectedTo,
+            expectedData
+        );
+
+        (
+            bool canFail,
+            UniV2Pair pair,
+            uint256 amount0Out,
+            uint256 amount1Out,
+            address to,
+            bytes memory data
+        ) = decoder.decodeSwapUniV2(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(UniV2Pair.unwrap(pair), expectedPair);
+        assertEq(amount0Out, expectedAmount0Out);
+        assertEq(amount1Out, expectedAmount1Out);
+        assertEq(to, expectedTo);
+        assertEq(keccak256(data), keccak256(expectedData));
+    }
 }
