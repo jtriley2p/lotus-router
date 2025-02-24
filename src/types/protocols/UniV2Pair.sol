@@ -7,12 +7,11 @@ type UniV2Pair is address;
 
 using { swap } for UniV2Pair global;
 
-// keccak256("swap(uint256,uint256,address,bytes)")
 uint256 constant swapSelector = 0x022c0d9f00000000000000000000000000000000000000000000000000000000;
 
 // ## Execute Uniswap V2 Swap
 //
-// ## Parameters
+// ### Parameters
 //
 // - pair: The Uniswap V2 pair address.
 // - amount0Out: The expected output amount for token 0.
@@ -20,17 +19,17 @@ uint256 constant swapSelector = 0x022c0d9f00000000000000000000000000000000000000
 // - to: The receiver of the swap output.
 // - data: The arbitrary calldata for UniV2 callbacks, if any.
 //
-// ## Returns
+// ### Returns
 //
 // - success: returns True if the swap succeeded.
 //
-// ## Notes
+// ### Notes
 //
 // - If swapping across multiple pairs, `to` will be the next pair in the chain.
 // - This is memory safe, as we do not interfere with allocated memory and we
 //   allow it to be freed after this function ends.
 //
-// ## Procedures
+// ### Procedures
 //
 // 01. Load the free memory pointer.
 // 02. Load the `data` length as a 32 bit integer.

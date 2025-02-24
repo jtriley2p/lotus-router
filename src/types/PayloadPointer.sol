@@ -13,15 +13,15 @@ uint256 constant uniswapV2Call = 0x10d1e85c;
 
 // ## Finds the Payload Pointer
 //
-// ## Returns
+// ### Returns
 //
 // - ptr: A pointer to the payload in calldata
 //
-// ## Reverts
+// ### Reverts
 //
 // - If the selector does not match any expected ones.
 //
-// ## Notes
+// ### Notes
 //
 // For `callLotusRouter()`, the payload immediately follows the selector at
 // index four (`0x04`).
@@ -44,17 +44,17 @@ function findPtr() pure returns (Ptr) {
 
 // ## Loads the Next Calldata Word
 //
-// ## Parameters
+// ### Parameters
 //
 // - ptr: The payload pointer
 // - byteLen: The length, in bytes of the word to load
 //
-// ## Returns
+// ### Returns
 //
 // - ptr: The incremented payload pointer
 // - word: The loaded word
 //
-// ## Notes
+// ### Notes
 //
 // The `ptr` parameter is incremented in place to allow continuous parsing.
 //
