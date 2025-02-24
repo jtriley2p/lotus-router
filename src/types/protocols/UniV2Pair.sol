@@ -52,26 +52,26 @@ function swap(
     BytesCalldata data
 ) returns (bool success) {
     assembly ("memory-safe") {
-        let ptr := mload(0x40)
+        let fmp := mload(0x40)
 
         let dataLen := shr(0xe0, calldataload(data))
 
         data := add(data, 0x04)
 
-        mstore(add(0x00, ptr), swapSelector)
+        mstore(add(0x00, fmp), swapSelector)
 
-        mstore(add(0x04, ptr), amount0Out)
+        mstore(add(0x04, fmp), amount0Out)
 
-        mstore(add(0x24, ptr), amount1Out)
+        mstore(add(0x24, fmp), amount1Out)
 
-        mstore(add(0x44, ptr), to)
+        mstore(add(0x44, fmp), to)
 
-        mstore(add(0x64, ptr), 0x80)
+        mstore(add(0x64, fmp), 0x80)
 
-        mstore(add(0x84, ptr), dataLen)
+        mstore(add(0x84, fmp), dataLen)
 
-        calldatacopy(add(0xa4, ptr), data, dataLen)
+        calldatacopy(add(0xa4, fmp), data, dataLen)
 
-        success := call(gas(), pair, 0x00, ptr, add(0xc4, dataLen), 0x00, 0x00)
+        success := call(gas(), pair, 0x00, fmp, add(0xc4, dataLen), 0x00, 0x00)
     }
 }
