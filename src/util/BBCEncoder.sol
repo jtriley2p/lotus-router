@@ -54,7 +54,62 @@ library BBCEncoder {
             10 + pairByteLen + amount0OutByteLen + amount1OutByteLen + toByteLen + dataByteLen
         );
 
-        assembly {
+        assembly ("memory-safe") {
+            let ptr := add(encoded, 0x20)
+
+            mstore(ptr, shl(0xf8, action))
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, canFail))
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, pairByteLen))
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, pairByteLen)), pair))
+            ptr := add(ptr, pairByteLen)
+
+            mstore(ptr, shl(0xf8, amount0OutByteLen))
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, amount0OutByteLen)), amount0Out))
+            ptr := add(ptr, amount0OutByteLen)
+
+            mstore(ptr, shl(0xf8, amount1OutByteLen))
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, amount1OutByteLen)), amount1Out))
+            ptr := add(ptr, amount1OutByteLen)
+
+            mstore(ptr, shl(0xf8, toByteLen))
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, toByteLen)), to))
+            ptr := add(ptr, toByteLen)
+
+            mstore(ptr, shl(0xe0, dataByteLen))
+            ptr := add(ptr, 0x04)
+
+            pop(staticcall(gas(), 0x04, add(data, 0x20), dataByteLen, ptr, dataByteLen))
+        }
+
+        return encoded;
+    }
+
+    function encodeTransferERC20(
+        bool canFail,
+        address token,
+        address receiver,
+        uint256 amount
+    ) internal pure returns (bytes memory) {
+        Action action = Action.TransferERC20;
+        uint8 tokenByteLen = byteLen(token);
+        uint8 receiverByteLen = byteLen(receiver);
+        uint8 amountByteLen = byteLen(amount);
+
+        bytes memory encoded = new bytes(5 + tokenByteLen + receiverByteLen + amountByteLen);
+
+        assembly ("memory-safe") {
             let ptr := add(encoded, 0x20)
 
             mstore(ptr, shl(0xf8, action))
@@ -65,43 +120,27 @@ library BBCEncoder {
 
             ptr := add(ptr, 0x01)
 
-            mstore(ptr, shl(0xf8, pairByteLen))
+            mstore(ptr, shl(0xf8, tokenByteLen))
 
             ptr := add(ptr, 0x01)
 
-            mstore(ptr, shl(sub(0x0100, mul(0x08, pairByteLen)), pair))
+            mstore(ptr, shl(sub(0x0100, mul(0x08, tokenByteLen)), token))
 
-            ptr := add(ptr, pairByteLen)
+            ptr := add(ptr, tokenByteLen)
 
-            mstore(ptr, shl(0xf8, amount0OutByteLen))
-
-            ptr := add(ptr, 0x01)
-
-            mstore(ptr, shl(sub(0x0100, mul(0x08, amount0OutByteLen)), amount0Out))
-
-            ptr := add(ptr, amount0OutByteLen)
-
-            mstore(ptr, shl(0xf8, amount1OutByteLen))
+            mstore(ptr, shl(0xf8, receiverByteLen))
 
             ptr := add(ptr, 0x01)
 
-            mstore(ptr, shl(sub(0x0100, mul(0x08, amount1OutByteLen)), amount1Out))
+            mstore(ptr, shl(sub(0x0100, mul(0x08, receiverByteLen)), receiver))
 
-            ptr := add(ptr, amount1OutByteLen)
+            ptr := add(ptr, receiverByteLen)
 
-            mstore(ptr, shl(0xf8, toByteLen))
+            mstore(ptr, shl(0xf8, amountByteLen))
 
             ptr := add(ptr, 0x01)
 
-            mstore(ptr, shl(sub(0x0100, mul(0x08, toByteLen)), to))
-
-            ptr := add(ptr, toByteLen)
-
-            mstore(ptr, shl(0xe0, dataByteLen))
-
-            ptr := add(ptr, 0x04)
-
-            pop(staticcall(gas(), 0x04, add(data, 0x20), dataByteLen, ptr, dataByteLen))
+            mstore(ptr, shl(sub(0x0100, mul(0x08, amountByteLen)), amount))
         }
 
         return encoded;

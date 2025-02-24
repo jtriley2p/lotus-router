@@ -6,8 +6,9 @@ import { BBCDecoderMock } from "test/mock/BBCDecoderMock.sol";
 
 import { Action } from "src/types/Action.sol";
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
-
 import { Ptr } from "src/types/PayloadPointer.sol";
+
+import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
 import { BBCEncoder } from "src/util/BBCEncoder.sol";
@@ -85,5 +86,43 @@ contract BBCDecoderTest is Test {
         assertEq(amount1Out, expectedAmount1Out);
         assertEq(to, expectedTo);
         assertEq(keccak256(data), keccak256(expectedData));
+    }
+
+    function testDecodeTransferERC20() public view {
+        bool expectedCanFail = true;
+        address expectedToken = address(0xaabbccdd);
+        address expectedReceiver = address(0xeeffaabb);
+        uint8 expectedAmount = 0x45;
+
+        bytes memory encoded = BBCEncoder.encodeTransferERC20(
+            expectedCanFail, expectedToken, expectedReceiver, expectedAmount
+        );
+
+        (bool canFail, ERC20 token, address receiver, uint256 amount) =
+            decoder.decodeTransferERC20(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC20.unwrap(token), expectedToken);
+        assertEq(receiver, expectedReceiver);
+        assertEq(amount, expectedAmount);
+    }
+
+    function testDecodeTransferERC20(
+        bool expectedCanFail,
+        address expectedToken,
+        address expectedReceiver,
+        uint8 expectedAmount
+    ) public view {
+        bytes memory encoded = BBCEncoder.encodeTransferERC20(
+            expectedCanFail, expectedToken, expectedReceiver, expectedAmount
+        );
+
+        (bool canFail, ERC20 token, address receiver, uint256 amount) =
+            decoder.decodeTransferERC20(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC20.unwrap(token), expectedToken);
+        assertEq(receiver, expectedReceiver);
+        assertEq(amount, expectedAmount);
     }
 }

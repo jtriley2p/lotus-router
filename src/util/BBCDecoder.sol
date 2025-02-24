@@ -3,6 +3,8 @@ pragma solidity 0.8.28;
 
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
+
+import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 
 // ## Decoder
@@ -84,6 +86,92 @@ library BBCDecoder {
             nextPtr := add(nextPtr, 0x04)
 
             nextPtr := add(nextPtr, nextByteLen)
+        }
+    }
+
+    function decodeTransferERC20(
+        Ptr ptr
+    )
+        internal
+        pure
+        returns (Ptr nextPtr, bool canFail, ERC20 token, address receiver, uint256 amount)
+    {
+        assembly {
+            let nextByteLen, nextBitShift
+            nextPtr := ptr
+
+            canFail := shr(u8Shr, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, 0x01)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            token := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            receiver := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            amount := shr(nextBitShift, calldataload(nextPtr))
+        }
+    }
+
+    function decodeTransferFromERC20(
+        Ptr ptr
+    )
+        internal
+        pure
+        returns (
+            Ptr nextPtr,
+            bool canFail,
+            ERC20 token,
+            address sender,
+            address receiver,
+            uint256 amount
+        )
+    {
+        assembly {
+            let nextByteLen, nextBitShift
+            nextPtr := ptr
+
+            canFail := shr(u8Shr, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, 0x01)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            token := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            sender := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            receiver := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            amount := shr(nextBitShift, calldataload(nextPtr))
         }
     }
 }

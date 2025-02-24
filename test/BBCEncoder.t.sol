@@ -85,6 +85,67 @@ contract BBCEncoderTest is Test {
         assertEq(keccak256(encoded), keccak256(expected));
     }
 
+    function testEncodeTransferERC20() public pure {
+        bool canFail = false;
+
+        uint8 tokenByteLen = 0x04;
+        address token = address(0xaabbccdd);
+
+        uint8 receiverByteLen = 0x04;
+        address receiver = address(0xeeffaabb);
+
+        uint8 amountByteLen = 0x01;
+        uint8 amount = 0x02;
+
+        bytes memory encoded = BBCEncoder.encodeTransferERC20(canFail, token, receiver, amount);
+
+        bytes memory expected = abi.encodePacked(
+            uint8(Action.TransferERC20),
+            canFail,
+            tokenByteLen,
+            uint32(uint160(token)),
+            receiverByteLen,
+            uint32(uint160(receiver)),
+            amountByteLen,
+            amount
+        );
+
+        assertEq(keccak256(encoded), keccak256(expected));
+    }
+
+    function testFuzzEncodeTransferERC20(
+        bool canFail,
+        uint8 tokenByteLen,
+        uint160 token,
+        uint8 receiverByteLen,
+        uint160 receiver,
+        uint8 amountByteLen,
+        uint256 amount
+    ) public {
+        tokenByteLen = uint8(bound(tokenByteLen, 0, 20));
+        token = uint160(bound(token, __min(tokenByteLen), __max(tokenByteLen)));
+
+        receiverByteLen = uint8(bound(receiverByteLen, 0, 20));
+        receiver = uint160(bound(receiver, __min(receiverByteLen), __max(receiverByteLen)));
+
+        amountByteLen = uint8(bound(amountByteLen, 0, 32));
+        amount = bound(amount, __min(amountByteLen), __max(amountByteLen));
+
+        bytes memory encoded =
+            BBCEncoder.encodeTransferERC20(canFail, address(token), address(receiver), amount);
+
+        bytes memory expected = abi.encodePacked(uint8(Action.TransferERC20), canFail);
+
+        expected = __pack(expected, tokenByteLen, token);
+        expected = __pack(expected, receiverByteLen, receiver);
+        expected = __pack(expected, amountByteLen, amount);
+
+        emit log_bytes(encoded);
+        emit log_bytes(expected);
+
+        assertEq(keccak256(encoded), keccak256(expected));
+    }
+
     function __min(
         uint8 byteLen
     ) internal pure returns (uint256) {
