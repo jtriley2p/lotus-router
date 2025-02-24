@@ -1,6 +1,10 @@
 # Lotus Router
 
-A free and open source, reasonably optimized router smart contract.
+The Lotus Router is an embedded virtual machine which treats instructions as
+DeFi protocol interactions, primarily automated market marker protocols. It does
+not take fees, it does not extract rent, it is not upgradeable, it is
+permissionless, it is free and open source software. It bears the AGPL-3.0
+copy-left license.
 
 Built with experience from the frontier, with solidarity for developers of
 sovereignity, and with a love for democratization of knowledge and software.
