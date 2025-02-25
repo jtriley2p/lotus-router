@@ -103,7 +103,7 @@ function transfer(ERC20 token, address receiver, uint256 amount) returns (bool s
 //     non-zero.
 // 08. Logical AND the success conditions.
 // 09. Restore the free memory pointer.
-// 10. Restore the zero slot
+// 10. Restore the zero slot.
 function transferFrom(
     ERC20 token,
     address sender,
