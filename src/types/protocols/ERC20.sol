@@ -54,15 +54,13 @@ function transfer(ERC20 token, address receiver, uint256 amount) returns (bool s
 
         mstore(0x24, amount)
 
-        success := call(gas(), token, 0x00, 0x00, 0x44, 0x60, 0x20)
+        success := call(gas(), token, 0x00, 0x00, 0x44, 0x00, 0x20)
 
-        let successERC20 := or(iszero(returndatasize()), iszero(iszero(mload(0x60))))
+        let successERC20 := or(iszero(returndatasize()), eq(0x01, mload(0x00)))
 
         success := and(success, successERC20)
 
         mstore(0x24, 0x00)
-
-        mstore(0x60, 0x00)
     }
 }
 
@@ -123,9 +121,9 @@ function transferFrom(
 
         mstore(0x44, amount)
 
-        success := call(gas(), token, 0x00, 0x00, 0x64, 0x60, 0x20)
+        success := call(gas(), token, 0x00, 0x00, 0x64, 0x00, 0x20)
 
-        let successERC20 := or(iszero(returndatasize()), mload(0x60))
+        let successERC20 := or(iszero(returndatasize()), eq(0x01, mload(0x00)))
 
         success := and(success, successERC20)
 
