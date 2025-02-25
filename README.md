@@ -63,8 +63,8 @@ Batchable actions:
 - [x] ERC721 TransferFrom
 - [ ] ERC6909 Transfer
 - [ ] ERC6909 TransferFrom
-- [ ] Wrap WETH
-- [ ] Unwrap WETH
+- [x] Wrap WETH
+- [x] Unwrap WETH
 
 Other features:
 
