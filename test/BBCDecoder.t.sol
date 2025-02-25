@@ -167,4 +167,46 @@ contract BBCDecoderTest is Test {
         assertEq(receiver, expectedReceiver);
         assertEq(amount, expectedAmount);
     }
+
+    function testDecodeTransferFromERC721() public view {
+        bool expectedCanFail = true;
+        address expectedToken = address(0xaabbccdd);
+        address expectedSender = address(0xeeffaabb);
+        address expectedReceiver = address(0xccddeeff);
+        uint8 expectedTokenId = 0x45;
+
+        bytes memory encoded = BBCEncoder.encodeTransferFromERC20(
+            expectedCanFail, expectedToken, expectedSender, expectedReceiver, expectedTokenId
+        );
+
+        (bool canFail, ERC20 token, address sender, address receiver, uint256 tokenId) =
+            decoder.decodeTransferFromERC20(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC20.unwrap(token), expectedToken);
+        assertEq(sender, expectedSender);
+        assertEq(receiver, expectedReceiver);
+        assertEq(tokenId, expectedTokenId);
+    }
+
+    function testFuzzDecodeTransferFromERC721(
+        bool expectedCanFail,
+        address expectedToken,
+        address expectedSender,
+        address expectedReceiver,
+        uint8 expectedTokenid
+    ) public view {
+        bytes memory encoded = BBCEncoder.encodeTransferFromERC20(
+            expectedCanFail, expectedToken, expectedSender, expectedReceiver, expectedTokenid
+        );
+
+        (bool canFail, ERC20 token, address sender, address receiver, uint256 tokenId) =
+            decoder.decodeTransferFromERC20(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC20.unwrap(token), expectedToken);
+        assertEq(sender, expectedSender);
+        assertEq(receiver, expectedReceiver);
+        assertEq(tokenId, expectedTokenid);
+    }
 }

@@ -60,7 +60,7 @@ Batchable actions:
 - [ ] Uniswap V4 Swap
 - [x] ERC20 Transfer
 - [x] ERC20 TransferFrom
-- [ ] ERC721 TransferFrom
+- [x] ERC721 TransferFrom
 - [ ] ERC6909 Transfer
 - [ ] ERC6909 TransferFrom
 - [ ] Wrap WETH

@@ -207,6 +207,67 @@ library BBCEncoder {
         return encoded;
     }
 
+    function encodeTransferFromERC721(
+        bool canFail,
+        address token,
+        address sender,
+        address receiver,
+        uint256 tokenId
+    ) public pure returns (bytes memory) {
+        Action action = Action.TransferFromERC20;
+        uint8 tokenByteLen = byteLen(token);
+        uint8 senderByteLen = byteLen(sender);
+        uint8 receiverByteLen = byteLen(receiver);
+        uint8 tokenIdByteLen = byteLen(tokenId);
+
+        bytes memory encoded =
+            new bytes(6 + tokenByteLen + senderByteLen + receiverByteLen + tokenIdByteLen);
+
+        assembly ("memory-safe") {
+            let ptr := add(encoded, 0x20)
+
+            mstore(ptr, shl(0xf8, action))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, canFail))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, tokenByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, tokenByteLen)), token))
+
+            ptr := add(ptr, tokenByteLen)
+
+            mstore(ptr, shl(0xf8, senderByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, senderByteLen)), sender))
+
+            ptr := add(ptr, senderByteLen)
+
+            mstore(ptr, shl(0xf8, receiverByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, receiverByteLen)), receiver))
+
+            ptr := add(ptr, receiverByteLen)
+
+            mstore(ptr, shl(0xf8, tokenIdByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, tokenIdByteLen)), tokenId))
+        }
+
+        return encoded;
+    }
+
     function byteLen(
         uint256 word
     ) internal pure returns (uint8) {
