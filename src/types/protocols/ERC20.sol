@@ -99,8 +99,8 @@ function transfer(ERC20 token, address receiver, uint256 amount) returns (bool s
 // 04. Store the `receiver`.
 // 05. Store the `amount`.
 // 06. Call the `token` contract, caching the `success` boolean.
-// 07. Check that either the `returndatasize` is zero or the returned value is.
-//     non-zero.
+// 07. Check that either the `returndatasize` is zero or the returned value is
+//     true (0x01).
 // 08. Logical AND the success conditions.
 // 09. Restore the free memory pointer.
 // 10. Restore the zero slot.
