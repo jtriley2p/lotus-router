@@ -59,14 +59,11 @@ contract LotusRouter {
     // > TODO: Provide documentation for interfacing with this safely.
     fallback() external payable {
         Ptr ptr = findPtr();
+        Action action;
         bool success = true;
 
         while (success) {
-            Action action;
-
             (ptr, action) = ptr.nextAction();
-
-            if (action == Action.Halt) return;
 
             (ptr, success) = action.execute(ptr);
         }

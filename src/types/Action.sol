@@ -24,7 +24,11 @@ enum Action {
 using { execute } for Action global;
 
 function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
-    if (action == Action.SwapUniV2) {
+    if (action == Action.Halt) {
+        assembly {
+            stop()
+        }
+    } else if (action == Action.SwapUniV2) {
         bool canFail;
         UniV2Pair pair;
         uint256 amount0Out;
