@@ -6,7 +6,7 @@ import { Error } from "src/types/Error.sol";
 
 type Ptr is uint256;
 
-using { nextWord, nextAction } for Ptr global;
+using { nextAction } for Ptr global;
 
 uint256 constant takeAction = 0x19ff8034;
 uint256 constant uniswapV2Call = 0x10d1e85c;
@@ -40,38 +40,6 @@ function findPtr() pure returns (Ptr) {
     } else {
         revert Error.UnexpectedEntryPoint();
     }
-}
-
-// ## Loads the Next Calldata Word
-//
-// ### Parameters
-//
-// - ptr: The payload pointer
-// - byteLen: The length, in bytes of the word to load
-//
-// ### Returns
-//
-// - ptr: The incremented payload pointer
-// - word: The loaded word
-//
-// ### Notes
-//
-// The `ptr` parameter is incremented in place to allow continuous parsing.
-//
-// The `word` is cast to a `uint256` to accommodate all word sizes, though it
-// will always retain the size indicated by the `byteLen`, in bytes.
-function nextWord(Ptr ptr, uint8 byteLen) pure returns (Ptr, uint256 word) {
-    assembly {
-        word := calldataload(ptr)
-
-        let bitLen := mul(0x08, byteLen)
-
-        word := shr(sub(0x100, bitLen), word)
-
-        ptr := add(ptr, byteLen)
-    }
-
-    return (ptr, word);
 }
 
 // ## Loads the Next Action from Calldata
