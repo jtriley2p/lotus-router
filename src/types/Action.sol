@@ -42,7 +42,7 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         success = pair.swap(amount0Out, amount1Out, to, data) || canFail;
     } else if (action == Action.SwapUniV3) {
         revert("todo");
-    } else if (action == Action.SwapUni43) {
+    } else if (action == Action.SwapUniV4) {
         revert("todo");
     } else if (action == Action.TransferERC20) {
         bool canFail;
