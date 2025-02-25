@@ -69,7 +69,11 @@ contract BBCDecoderMock {
 
     function decodeTransferFromERC20(
         bytes calldata encoded
-    ) public pure returns (bool canFail, ERC20 token, address sender, address receiver, uint256 amount) {
+    )
+        public
+        pure
+        returns (bool canFail, ERC20 token, address sender, address receiver, uint256 amount)
+    {
         Ptr ptr;
 
         // add 0x01 bc the first byte is the `Action` opcode, it's not decoded

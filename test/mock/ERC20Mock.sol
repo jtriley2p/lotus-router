@@ -8,15 +8,21 @@ contract ERC20Mock {
     bool internal _shouldReturnAnything = true;
     bool internal _result = true;
 
-    function setShouldThrow(bool shouldThrow) public {
+    function setShouldThrow(
+        bool shouldThrow
+    ) public {
         _shouldThrow = shouldThrow;
     }
 
-    function setShouldReturnAnything(bool shouldReturnAnything) public {
+    function setShouldReturnAnything(
+        bool shouldReturnAnything
+    ) public {
         _shouldReturnAnything = shouldReturnAnything;
     }
 
-    function setResult(bool result) public {
+    function setResult(
+        bool result
+    ) public {
         _result = result;
     }
 
@@ -27,7 +33,9 @@ contract ERC20Mock {
 
         if (_shouldReturnAnything) return _result;
 
-        assembly { return(0x00, 0x00) }
+        assembly {
+            return(0x00, 0x00)
+        }
     }
 
     function transferFrom(address sender, address receiver, uint256 amount) public returns (bool) {
@@ -37,6 +45,8 @@ contract ERC20Mock {
 
         if (_shouldReturnAnything) return _result;
 
-        assembly { return(0x00, 0x00) }
+        assembly {
+            return(0x00, 0x00)
+        }
     }
 }

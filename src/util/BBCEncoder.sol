@@ -159,9 +159,8 @@ library BBCEncoder {
         uint8 receiverByteLen = byteLen(receiver);
         uint8 amountByteLen = byteLen(amount);
 
-        bytes memory encoded = new bytes(
-            6 + tokenByteLen + senderByteLen + receiverByteLen + amountByteLen
-        );
+        bytes memory encoded =
+            new bytes(6 + tokenByteLen + senderByteLen + receiverByteLen + amountByteLen);
 
         assembly ("memory-safe") {
             let ptr := add(encoded, 0x20)

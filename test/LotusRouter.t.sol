@@ -2,8 +2,9 @@
 pragma solidity 0.8.28;
 
 import { Test } from "lib/forge-std/src/Test.sol";
-import { UniV2PairMock } from "test/mock/UniV2PairMock.sol";
+
 import { ERC20Mock } from "test/mock/ERC20Mock.sol";
+import { UniV2PairMock } from "test/mock/UniV2PairMock.sol";
 
 import { LotusRouter } from "src/LotusRouter.sol";
 import { BBCEncoder } from "src/util/BBCEncoder.sol";
@@ -192,10 +193,7 @@ contract LotusRouterTest is Test {
         address receiver = address(0xaabbccdd);
         uint256 amount = 0x02;
 
-        vm.expectCall(
-            address(erc20_0),
-            abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
-        );
+        vm.expectCall(address(erc20_0), abi.encodeCall(ERC20Mock.transfer, (receiver, amount)));
 
         bool success = lotus.takeAction(
             BBCEncoder.encodeTransferERC20(canFail, address(erc20_0), receiver, amount)
@@ -211,10 +209,7 @@ contract LotusRouterTest is Test {
 
         erc20_0.setShouldReturnAnything(false);
 
-        vm.expectCall(
-            address(erc20_0),
-            abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
-        );
+        vm.expectCall(address(erc20_0), abi.encodeCall(ERC20Mock.transfer, (receiver, amount)));
 
         bool success = lotus.takeAction(
             BBCEncoder.encodeTransferERC20(canFail, address(erc20_0), receiver, amount)
@@ -266,10 +261,7 @@ contract LotusRouterTest is Test {
         bool callSucceeds = !shouldThrow && (result || !shouldReturnAnything) || canFail;
 
         if (callSucceeds) {
-            vm.expectCall(
-                address(erc20_0),
-                abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
-            );
+            vm.expectCall(address(erc20_0), abi.encodeCall(ERC20Mock.transfer, (receiver, amount)));
         }
 
         bool success = lotus.takeAction(
@@ -288,15 +280,9 @@ contract LotusRouterTest is Test {
         address receiver_1 = address(0xeeffaabb);
         uint256 amount_1 = 0x04;
 
-        vm.expectCall(
-            address(erc20_0),
-            abi.encodeCall(ERC20Mock.transfer, (receiver_0, amount_0))
-        );
+        vm.expectCall(address(erc20_0), abi.encodeCall(ERC20Mock.transfer, (receiver_0, amount_0)));
 
-        vm.expectCall(
-            address(erc20_1),
-            abi.encodeCall(ERC20Mock.transfer, (receiver_1, amount_1))
-        );
+        vm.expectCall(address(erc20_1), abi.encodeCall(ERC20Mock.transfer, (receiver_1, amount_1)));
 
         bool success = lotus.takeAction(
             abi.encodePacked(
@@ -320,15 +306,9 @@ contract LotusRouterTest is Test {
         erc20_0.setShouldReturnAnything(false);
         erc20_1.setShouldReturnAnything(false);
 
-        vm.expectCall(
-            address(erc20_0),
-            abi.encodeCall(ERC20Mock.transfer, (receiver_0, amount_0))
-        );
+        vm.expectCall(address(erc20_0), abi.encodeCall(ERC20Mock.transfer, (receiver_0, amount_0)));
 
-        vm.expectCall(
-            address(erc20_1),
-            abi.encodeCall(ERC20Mock.transfer, (receiver_1, amount_1))
-        );
+        vm.expectCall(address(erc20_1), abi.encodeCall(ERC20Mock.transfer, (receiver_1, amount_1)));
 
         bool success = lotus.takeAction(
             abi.encodePacked(
@@ -352,9 +332,7 @@ contract LotusRouterTest is Test {
         erc20_0.setShouldThrow(true);
 
         vm.expectCall(
-            address(erc20_1),
-            abi.encodeCall(ERC20Mock.transfer, (receiver_1, amount_1)),
-            0
+            address(erc20_1), abi.encodeCall(ERC20Mock.transfer, (receiver_1, amount_1)), 0
         );
 
         bool success = lotus.takeAction(
@@ -378,10 +356,7 @@ contract LotusRouterTest is Test {
 
         erc20_1.setShouldThrow(true);
 
-        vm.expectCall(
-            address(erc20_0),
-            abi.encodeCall(ERC20Mock.transfer, (receiver_0, amount_0))
-        );
+        vm.expectCall(address(erc20_0), abi.encodeCall(ERC20Mock.transfer, (receiver_0, amount_0)));
 
         bool success = lotus.takeAction(
             abi.encodePacked(
@@ -412,15 +387,9 @@ contract LotusRouterTest is Test {
         bool callSucceeds = !shouldThrow && (result || !shouldReturnAnything) || canFail;
 
         if (callSucceeds) {
-            vm.expectCall(
-                address(erc20_0),
-                abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
-            );
+            vm.expectCall(address(erc20_0), abi.encodeCall(ERC20Mock.transfer, (receiver, amount)));
 
-            vm.expectCall(
-                address(erc20_1),
-                abi.encodeCall(ERC20Mock.transfer, (receiver, amount))
-            );
+            vm.expectCall(address(erc20_1), abi.encodeCall(ERC20Mock.transfer, (receiver, amount)));
         }
 
         bool success = lotus.takeAction(
@@ -440,8 +409,7 @@ contract LotusRouterTest is Test {
         uint256 amount = 0x02;
 
         vm.expectCall(
-            address(erc20_0),
-            abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
+            address(erc20_0), abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
         );
 
         bool success = lotus.takeAction(
@@ -460,8 +428,7 @@ contract LotusRouterTest is Test {
         erc20_0.setShouldReturnAnything(false);
 
         vm.expectCall(
-            address(erc20_0),
-            abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
+            address(erc20_0), abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
         );
 
         bool success = lotus.takeAction(
@@ -518,8 +485,7 @@ contract LotusRouterTest is Test {
 
         if (callSucceeds) {
             vm.expectCall(
-                address(erc20_0),
-                abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
+                address(erc20_0), abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
             );
         }
 
@@ -553,8 +519,12 @@ contract LotusRouterTest is Test {
 
         bool success = lotus.takeAction(
             abi.encodePacked(
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_0), sender_0, receiver_0, amount_0),
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_1), sender_1, receiver_1, amount_1)
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_0), sender_0, receiver_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_1), sender_1, receiver_1, amount_1
+                )
             )
         );
 
@@ -587,8 +557,12 @@ contract LotusRouterTest is Test {
 
         bool success = lotus.takeAction(
             abi.encodePacked(
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_0), sender_0, receiver_0, amount_0),
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_1), sender_1, receiver_1, amount_1)
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_0), sender_0, receiver_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_1), sender_1, receiver_1, amount_1
+                )
             )
         );
 
@@ -616,8 +590,12 @@ contract LotusRouterTest is Test {
 
         bool success = lotus.takeAction(
             abi.encodePacked(
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_0), sender_0, receiver_0, amount_0),
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_1), sender_1, receiver_1, amount_1)
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_0), sender_0, receiver_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_1), sender_1, receiver_1, amount_1
+                )
             )
         );
 
@@ -644,8 +622,12 @@ contract LotusRouterTest is Test {
 
         bool success = lotus.takeAction(
             abi.encodePacked(
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_0), sender_0, receiver_0, amount_0),
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_1), sender_1, receiver_1, amount_1)
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_0), sender_0, receiver_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_1), sender_1, receiver_1, amount_1
+                )
             )
         );
 
@@ -673,20 +655,22 @@ contract LotusRouterTest is Test {
 
         if (callSucceeds) {
             vm.expectCall(
-                address(erc20_0),
-                abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
+                address(erc20_0), abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
             );
 
             vm.expectCall(
-                address(erc20_1),
-                abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
+                address(erc20_1), abi.encodeCall(ERC20Mock.transferFrom, (sender, receiver, amount))
             );
         }
 
         bool success = lotus.takeAction(
             abi.encodePacked(
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_0), sender, receiver, amount),
-                BBCEncoder.encodeTransferFromERC20(canFail, address(erc20_1), sender, receiver, amount)
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_0), sender, receiver, amount
+                ),
+                BBCEncoder.encodeTransferFromERC20(
+                    canFail, address(erc20_1), sender, receiver, amount
+                )
             )
         );
 
