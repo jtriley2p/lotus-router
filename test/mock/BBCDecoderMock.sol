@@ -114,4 +114,17 @@ contract BBCDecoderMock {
 
         (, canFail, weth, value) = ptr.decodeDepositWETH();
     }
+
+    function decodeWithdrawWETH(
+        bytes calldata encoded
+    ) public pure returns (bool canFail, WETH weth, uint256 value) {
+        Ptr ptr;
+
+        // add 0x01 bc the first byte is the `Action` opcode, it's not decoded
+        assembly {
+            ptr := add(0x01, encoded.offset)
+        }
+
+        (, canFail, weth, value) = ptr.decodeWithdrawWETH();
+    }
 }

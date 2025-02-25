@@ -981,6 +981,43 @@ contract LotusRouterTest is Test {
         vm.stopPrank();
     }
 
+    function testWithdrawWETH() public {
+        bool canFail = false;
+        uint256 value = 0x01;
+
+        vm.expectCall(address(weth), abi.encodeCall(WETHMock.withdraw, (value)));
+
+        bool success =
+            lotus.takeAction(BBCEncoder.encodeWithdrawWETH(canFail, address(weth), value));
+
+        assertTrue(success);
+    }
+
+    function testWithdrawWETHTHrows() public {
+        bool canFail = false;
+        uint256 value = 0x01;
+
+        weth.setShouldThrow(true);
+
+        bool success =
+            lotus.takeAction(BBCEncoder.encodeWithdrawWETH(canFail, address(weth), value));
+
+        assertFalse(success);
+    }
+
+    function testFuzzWithdrawWETH(bool canFail, bool shouldThrow, uint256 value) public {
+        weth.setShouldThrow(shouldThrow);
+
+        if (canFail || !shouldThrow) {
+            vm.expectCall(address(weth), new bytes(0));
+        }
+
+        bool success =
+            lotus.takeAction(BBCEncoder.encodeWithdrawWETH(canFail, address(weth), value));
+
+        assertEq(success, canFail || !shouldThrow);
+    }
+
     function testWETHSendIsCheaperThanDeposit() public {
         address alice = address(0xaaaaaa);
         address cannonWeth = address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);

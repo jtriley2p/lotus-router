@@ -87,7 +87,13 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
 
         success = weth.deposit(value) || canFail;
     } else if (action == Action.WithdrawWETH) {
-        revert("todo");
+        bool canFail;
+        WETH weth;
+        uint256 value;
+
+        (ptr, canFail, weth, value) = BBCDecoder.decodeWithdrawWETH(ptr);
+
+        success = weth.withdraw(value) || canFail;
     } else {
         success = false;
     }

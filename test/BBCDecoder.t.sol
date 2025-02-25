@@ -240,4 +240,34 @@ contract BBCDecoderTest is Test {
         assertEq(WETH.unwrap(weth), expectedWeth);
         assertEq(value, expectedValue);
     }
+
+    function testDecodWithdrawWETH() public view {
+        bool expectedCanFail = false;
+        address expectedWeth = address(0xaabbccdd);
+        uint256 expectedValue = 0x45;
+
+        bytes memory encoded =
+            BBCEncoder.encodeWithdrawWETH(expectedCanFail, expectedWeth, expectedValue);
+
+        (bool canFail, WETH weth, uint256 value) = decoder.decodeWithdrawWETH(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(WETH.unwrap(weth), expectedWeth);
+        assertEq(value, expectedValue);
+    }
+
+    function testFuzzDecodeWithdrawWETH(
+        bool expectedCanFail,
+        address expectedWeth,
+        uint8 expectedValue
+    ) public view {
+        bytes memory encoded =
+            BBCEncoder.encodeWithdrawWETH(expectedCanFail, expectedWeth, expectedValue);
+
+        (bool canFail, WETH weth, uint256 value) = decoder.decodeWithdrawWETH(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(WETH.unwrap(weth), expectedWeth);
+        assertEq(value, expectedValue);
+    }
 }
