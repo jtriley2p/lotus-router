@@ -27,8 +27,8 @@ uint256 constant transferFromSelector =
 // scratchspace normally used by Solidity for keccak hashing. This reduces
 // overall memory allocations. However, it's worth noting that doing this
 // occupies the first 100 bytes, which overwrites the free memory pointer and
-// the first four bytes of the zero slot `0x60`. So we overwrite these upper
-// bytes at the end to ensure the free memory pointer and zero slot are correct.
+// the first four bytes of the zero slot `0x60`. So we overwrite these values
+// at the end to ensure the free memory pointer and zero slot are correct.
 //
 // ### Procedures
 //
@@ -42,7 +42,7 @@ uint256 constant transferFromSelector =
 //     non-zero.
 // 08. Logical AND the success conditions.
 // 09. Restore the free memory pointer.
-// 10. Restore the zero slot
+// 10. Restore the zero slot.
 function transferFrom(
     ERC721 token,
     address sender,
