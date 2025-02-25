@@ -86,7 +86,13 @@ contract BBCDecoderMock {
         (, canFail, token, sender, receiver, amount) = ptr.decodeTransferFromERC20();
     }
 
-    function decodeTransferFromERC721(bytes calldata encoded) public pure returns (bool canFail, ERC721 token, address sender, address receiver, uint256 tokenId) {
+    function decodeTransferFromERC721(
+        bytes calldata encoded
+    )
+        public
+        pure
+        returns (bool canFail, ERC721 token, address sender, address receiver, uint256 tokenId)
+    {
         Ptr ptr;
 
         // add 0x01 bc the first byte is the `Action` opcode, it's not decoded
@@ -97,7 +103,9 @@ contract BBCDecoderMock {
         (, canFail, token, sender, receiver, tokenId) = ptr.decodeTransferFromERC721();
     }
 
-    function decodeDepositWETH(bytes calldata encoded) public pure returns (bool canFail, WETH weth, uint256 value) {
+    function decodeDepositWETH(
+        bytes calldata encoded
+    ) public pure returns (bool canFail, WETH weth, uint256 value) {
         Ptr ptr;
 
         // add 0x01 bc the first byte is the `Action` opcode, it's not decoded

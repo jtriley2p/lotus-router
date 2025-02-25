@@ -181,14 +181,20 @@ library BBCDecoder {
         }
     }
 
-    function decodeTransferFromERC721(Ptr ptr) internal pure returns (
+    function decodeTransferFromERC721(
+        Ptr ptr
+    )
+        internal
+        pure
+        returns (
             Ptr nextPtr,
             bool canFail,
             ERC721 token,
             address sender,
             address receiver,
             uint256 tokenId
-    ) {
+        )
+    {
         assembly {
             let nextByteLen, nextBitShift
             nextPtr := ptr
@@ -227,12 +233,9 @@ library BBCDecoder {
         }
     }
 
-    function decodeDepositWETH(Ptr ptr) internal pure returns (
-        Ptr nextPtr,
-        bool canFail,
-        WETH weth,
-        uint256 value
-    ) {
+    function decodeDepositWETH(
+        Ptr ptr
+    ) internal pure returns (Ptr nextPtr, bool canFail, WETH weth, uint256 value) {
         assembly {
             let nextByteLen, nextBitShift
             nextPtr := ptr

@@ -17,10 +17,14 @@ function takeAction(LotusRouter lotus, bytes memory data) returns (bool success)
     (success,) = address(lotus).call(payload);
 }
 
-function takeActionWithValue(LotusRouter lotus, uint256 value, bytes memory data) returns (bool success) {
+function takeActionWithValue(
+    LotusRouter lotus,
+    uint256 value,
+    bytes memory data
+) returns (bool success) {
     bytes memory payload = abi.encodePacked(uint32(0x19ff8034), data);
 
-    (success,) = address(lotus).call{value:value}(payload);
+    (success,) = address(lotus).call{ value: value }(payload);
 }
 
 contract LotusRouterTest is Test {
@@ -708,7 +712,9 @@ contract LotusRouterTest is Test {
         );
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeTransferFromERC721(canFail, address(erc721_0), sender, receiver, tokenId)
+            BBCEncoder.encodeTransferFromERC721(
+                canFail, address(erc721_0), sender, receiver, tokenId
+            )
         );
 
         assertTrue(success);
@@ -723,7 +729,9 @@ contract LotusRouterTest is Test {
         erc721_0.setShouldThrow(true);
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeTransferFromERC721(canFail, address(erc721_0), sender, receiver, tokenId)
+            BBCEncoder.encodeTransferFromERC721(
+                canFail, address(erc721_0), sender, receiver, tokenId
+            )
         );
 
         assertFalse(success);
@@ -740,12 +748,15 @@ contract LotusRouterTest is Test {
 
         if (!shouldThrow || canFail) {
             vm.expectCall(
-                address(erc721_0), abi.encodeCall(ERC721Mock.transferFrom, (sender, receiver, tokenId))
+                address(erc721_0),
+                abi.encodeCall(ERC721Mock.transferFrom, (sender, receiver, tokenId))
             );
         }
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeTransferFromERC721(canFail, address(erc721_0), sender, receiver, tokenId)
+            BBCEncoder.encodeTransferFromERC721(
+                canFail, address(erc721_0), sender, receiver, tokenId
+            )
         );
 
         assertEq(success, !shouldThrow || canFail);
@@ -863,11 +874,13 @@ contract LotusRouterTest is Test {
 
         if (!shouldThrow || canFail) {
             vm.expectCall(
-                address(erc721_0), abi.encodeCall(ERC721Mock.transferFrom, (sender, receiver, tokenId))
+                address(erc721_0),
+                abi.encodeCall(ERC721Mock.transferFrom, (sender, receiver, tokenId))
             );
 
             vm.expectCall(
-                address(erc721_1), abi.encodeCall(ERC721Mock.transferFrom, (sender, receiver, tokenId))
+                address(erc721_1),
+                abi.encodeCall(ERC721Mock.transferFrom, (sender, receiver, tokenId))
             );
         }
 
@@ -891,15 +904,9 @@ contract LotusRouterTest is Test {
         bool canFail = false;
         uint256 value = 0x00;
 
-        vm.expectCall(
-            address(weth),
-            value,
-            new bytes(0)
-        );
+        vm.expectCall(address(weth), value, new bytes(0));
 
-        bool success = lotus.takeAction(
-            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
-        );
+        bool success = lotus.takeAction(BBCEncoder.encodeDepositWETH(canFail, address(weth), value));
 
         assertTrue(success);
     }
@@ -908,15 +915,10 @@ contract LotusRouterTest is Test {
         bool canFail = false;
         uint256 value = 0x01;
 
-        vm.expectCall(
-            address(weth),
-            value,
-            new bytes(0)
-        );
+        vm.expectCall(address(weth), value, new bytes(0));
 
         bool success = lotus.takeActionWithValue(
-            value,
-            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+            value, BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
         );
 
         assertTrue(success);
@@ -928,15 +930,9 @@ contract LotusRouterTest is Test {
 
         vm.deal(address(lotus), value);
 
-        vm.expectCall(
-            address(weth),
-            value,
-            new bytes(0)
-        );
+        vm.expectCall(address(weth), value, new bytes(0));
 
-        bool success = lotus.takeAction(
-            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
-        );
+        bool success = lotus.takeAction(BBCEncoder.encodeDepositWETH(canFail, address(weth), value));
 
         assertTrue(success);
     }
@@ -947,9 +943,7 @@ contract LotusRouterTest is Test {
 
         weth.setShouldThrow(true);
 
-        bool success = lotus.takeAction(
-            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
-        );
+        bool success = lotus.takeAction(BBCEncoder.encodeDepositWETH(canFail, address(weth), value));
 
         assertFalse(success);
     }
@@ -966,11 +960,7 @@ contract LotusRouterTest is Test {
         weth.setShouldThrow(shouldThrow);
 
         if (canFail || !shouldThrow) {
-            vm.expectCall(
-                address(weth),
-                value,
-                new bytes(0)
-            );
+            vm.expectCall(address(weth), value, new bytes(0));
         }
 
         bool success;
@@ -979,15 +969,12 @@ contract LotusRouterTest is Test {
             vm.deal(alice, value);
 
             success = lotus.takeActionWithValue(
-                value,
-                BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+                value, BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
             );
         } else {
             vm.deal(address(lotus), value);
-            
-            success = lotus.takeAction(
-                BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
-            );
+
+            success = lotus.takeAction(BBCEncoder.encodeDepositWETH(canFail, address(weth), value));
         }
 
         assertEq(success, canFail || !shouldThrow);
@@ -1027,10 +1014,7 @@ contract LotusRouterTest is Test {
             gasSendAfter := gas()
         }
 
-        assertLt(
-            gasSendBefore - gasSendAfter,
-            gasDepositBefore - gasDepositAfter
-        );
+        assertLt(gasSendBefore - gasSendAfter, gasDepositBefore - gasDepositAfter);
 
         // call send then deposit
         assembly {
@@ -1046,10 +1030,7 @@ contract LotusRouterTest is Test {
             gasDepositAfter := gas()
         }
 
-        assertLt(
-            gasSendBefore - gasSendAfter,
-            gasDepositBefore - gasDepositAfter
-        );
+        assertLt(gasSendBefore - gasSendAfter, gasDepositBefore - gasDepositAfter);
 
         vm.stopPrank();
     }

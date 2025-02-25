@@ -217,7 +217,8 @@ contract BBCDecoderTest is Test {
         address expectedWeth = address(0xaabbccdd);
         uint256 expectedValue = 0x45;
 
-        bytes memory encoded = BBCEncoder.encodeDepositWETH(expectedCanFail, expectedWeth, expectedValue);
+        bytes memory encoded =
+            BBCEncoder.encodeDepositWETH(expectedCanFail, expectedWeth, expectedValue);
 
         (bool canFail, WETH weth, uint256 value) = decoder.decodeDepositWETH(encoded);
 
