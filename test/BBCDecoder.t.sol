@@ -194,10 +194,10 @@ contract BBCDecoderTest is Test {
         address expectedToken,
         address expectedSender,
         address expectedReceiver,
-        uint8 expectedTokenid
+        uint8 expectedTokenId
     ) public view {
         bytes memory encoded = BBCEncoder.encodeTransferFromERC20(
-            expectedCanFail, expectedToken, expectedSender, expectedReceiver, expectedTokenid
+            expectedCanFail, expectedToken, expectedSender, expectedReceiver, expectedTokenId
         );
 
         (bool canFail, ERC20 token, address sender, address receiver, uint256 tokenId) =
@@ -207,6 +207,6 @@ contract BBCDecoderTest is Test {
         assertEq(ERC20.unwrap(token), expectedToken);
         assertEq(sender, expectedSender);
         assertEq(receiver, expectedReceiver);
-        assertEq(tokenId, expectedTokenid);
+        assertEq(tokenId, expectedTokenId);
     }
 }
