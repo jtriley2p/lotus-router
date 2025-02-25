@@ -42,7 +42,7 @@ uint256 constant transferFromSelector =
 // 02. Store the `receiver`.
 // 03. Store the `amount`.
 // 04. Call the `token` contract, caching the `success` boolean.
-// 05. Check that either the `calldatasize` is zero or the returned value is.
+// 05. Check that either the `returndatasize` is zero or the returned value is.
 //     non-zero.
 // 06. Logical AND the success conditions.
 // 07. Store zero to restore the upper bytes of the free memory pointer to zero.
@@ -54,13 +54,15 @@ function transfer(ERC20 token, address receiver, uint256 amount) returns (bool s
 
         mstore(0x24, amount)
 
-        success := call(gas(), token, 0x00, 0x00, 0x44, 0x00, 0x20)
+        success := call(gas(), token, 0x00, 0x00, 0x44, 0x60, 0x20)
 
-        let successERC20 := or(iszero(calldatasize()), iszero(iszero(mload(0x00))))
+        let successERC20 := or(iszero(returndatasize()), iszero(iszero(mload(0x60))))
 
         success := and(success, successERC20)
 
         mstore(0x24, 0x00)
+
+        mstore(0x60, 0x00)
     }
 }
 
@@ -99,7 +101,7 @@ function transfer(ERC20 token, address receiver, uint256 amount) returns (bool s
 // 04. Store the `receiver`.
 // 05. Store the `amount`.
 // 06. Call the `token` contract, caching the `success` boolean.
-// 07. Check that either the `calldatasize` is zero or the returned value is.
+// 07. Check that either the `returndatasize` is zero or the returned value is.
 //     non-zero.
 // 08. Logical AND the success conditions.
 // 09. Restore the free memory pointer.
@@ -121,9 +123,9 @@ function transferFrom(
 
         mstore(0x44, amount)
 
-        success := call(gas(), token, 0x00, 0x00, 0x64, 0x00, 0x20)
+        success := call(gas(), token, 0x00, 0x00, 0x64, 0x60, 0x20)
 
-        let successERC20 := or(iszero(calldatasize()), mload(0x00))
+        let successERC20 := or(iszero(returndatasize()), mload(0x60))
 
         success := and(success, successERC20)
 

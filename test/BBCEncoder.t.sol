@@ -6,6 +6,8 @@ import { Test } from "lib/forge-std/src/Test.sol";
 import { Action } from "src/types/Action.sol";
 import { BBCEncoder } from "src/util/BBCEncoder.sol";
 
+// TODO: decide whether to keep this; `test/BBCDecoder.t.sol` already checks
+//       this for us, and these tests suck to write.
 contract BBCEncoderTest is Test {
     function testEncodeSwapUniV2() public view {
         bool canFail = false;

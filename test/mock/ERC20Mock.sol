@@ -29,4 +29,14 @@ contract ERC20Mock {
 
         assembly { return(0x00, 0x00) }
     }
+
+    function transferFrom(address sender, address receiver, uint256 amount) public returns (bool) {
+        require(!_shouldThrow);
+
+        emit Transfer(sender, receiver, amount);
+
+        if (_shouldReturnAnything) return _result;
+
+        assembly { return(0x00, 0x00) }
+    }
 }

@@ -44,6 +44,16 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         (ptr, canFail, token, receiver, amount) = BBCDecoder.decodeTransferERC20(ptr);
 
         success = token.transfer(receiver, amount) || canFail;
+    } else if (action == Action.TransferFromERC20) {
+        bool canFail;
+        ERC20 token;
+        address sender;
+        address receiver;
+        uint256 amount;
+
+        (ptr, canFail, token, sender, receiver, amount) = BBCDecoder.decodeTransferFromERC20(ptr);
+
+        success = token.transferFrom(sender, receiver, amount) || canFail;
     } else {
         success = false;
     }

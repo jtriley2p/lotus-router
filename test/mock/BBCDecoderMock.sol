@@ -66,4 +66,17 @@ contract BBCDecoderMock {
 
         (, canFail, token, receiver, amount) = ptr.decodeTransferERC20();
     }
+
+    function decodeTransferFromERC20(
+        bytes calldata encoded
+    ) public pure returns (bool canFail, ERC20 token, address sender, address receiver, uint256 amount) {
+        Ptr ptr;
+
+        // add 0x01 bc the first byte is the `Action` opcode, it's not decoded
+        assembly {
+            ptr := add(0x01, encoded.offset)
+        }
+
+        (, canFail, token, sender, receiver, amount) = ptr.decodeTransferFromERC20();
+    }
 }
