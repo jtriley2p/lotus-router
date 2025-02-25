@@ -9,6 +9,7 @@ import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
 
 import { ERC20 } from "src/types/protocols/ERC20.sol";
+import { ERC721 } from "src/types/protocols/ERC721.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
 import { BBCEncoder } from "src/util/BBCEncoder.sol";
@@ -175,15 +176,15 @@ contract BBCDecoderTest is Test {
         address expectedReceiver = address(0xccddeeff);
         uint8 expectedTokenId = 0x45;
 
-        bytes memory encoded = BBCEncoder.encodeTransferFromERC20(
+        bytes memory encoded = BBCEncoder.encodeTransferFromERC721(
             expectedCanFail, expectedToken, expectedSender, expectedReceiver, expectedTokenId
         );
 
-        (bool canFail, ERC20 token, address sender, address receiver, uint256 tokenId) =
-            decoder.decodeTransferFromERC20(encoded);
+        (bool canFail, ERC721 token, address sender, address receiver, uint256 tokenId) =
+            decoder.decodeTransferFromERC721(encoded);
 
         assertEq(canFail, expectedCanFail);
-        assertEq(ERC20.unwrap(token), expectedToken);
+        assertEq(ERC721.unwrap(token), expectedToken);
         assertEq(sender, expectedSender);
         assertEq(receiver, expectedReceiver);
         assertEq(tokenId, expectedTokenId);
@@ -196,15 +197,15 @@ contract BBCDecoderTest is Test {
         address expectedReceiver,
         uint8 expectedTokenId
     ) public view {
-        bytes memory encoded = BBCEncoder.encodeTransferFromERC20(
+        bytes memory encoded = BBCEncoder.encodeTransferFromERC721(
             expectedCanFail, expectedToken, expectedSender, expectedReceiver, expectedTokenId
         );
 
-        (bool canFail, ERC20 token, address sender, address receiver, uint256 tokenId) =
-            decoder.decodeTransferFromERC20(encoded);
+        (bool canFail, ERC721 token, address sender, address receiver, uint256 tokenId) =
+            decoder.decodeTransferFromERC721(encoded);
 
         assertEq(canFail, expectedCanFail);
-        assertEq(ERC20.unwrap(token), expectedToken);
+        assertEq(ERC721.unwrap(token), expectedToken);
         assertEq(sender, expectedSender);
         assertEq(receiver, expectedReceiver);
         assertEq(tokenId, expectedTokenId);
