@@ -40,6 +40,10 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         (ptr, canFail, pair, amount0Out, amount1Out, to, data) = BBCDecoder.decodeSwapUniV2(ptr);
 
         success = pair.swap(amount0Out, amount1Out, to, data) || canFail;
+    } else if (action == Action.SwapUniV3) {
+        revert("todo");
+    } else if (action == Action.SwapUni43) {
+        revert("todo");
     } else if (action == Action.TransferERC20) {
         bool canFail;
         ERC20 token;
@@ -69,6 +73,14 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         (ptr, canFail, token, sender, receiver, amount) = BBCDecoder.decodeTransferFromERC721(ptr);
 
         success = token.transferFrom(sender, receiver, amount) || canFail;
+    } else if (action == Action.TransferERC6909) {
+        revert("todo");
+    } else if (action == Action.TransferFromERC6909) {
+        revert("todo");
+    } else if (action == Action.WrapWETH) {
+        revert("todo");
+    } else if (action == Action.UnwrapWETH) {
+        revert("todo");
     } else {
         success = false;
     }
