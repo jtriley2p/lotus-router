@@ -496,7 +496,7 @@ contract LotusRouterTest is Test {
         assertEq(success, callSucceeds);
     }
 
-    function testTransferFromERC20Chain69() public {
+    function testTransferFromERC20Chain() public {
         bool canFail = false;
 
         address sender_0 = address(0xaabbccdd);
