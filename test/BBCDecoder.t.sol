@@ -11,6 +11,7 @@ import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { ERC721 } from "src/types/protocols/ERC721.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
+import { WETH } from "src/types/protocols/WETH.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
 import { BBCEncoder } from "src/util/BBCEncoder.sol";
 
@@ -209,5 +210,19 @@ contract BBCDecoderTest is Test {
         assertEq(sender, expectedSender);
         assertEq(receiver, expectedReceiver);
         assertEq(tokenId, expectedTokenId);
+    }
+
+    function testDecodeDepositWETH() public view {
+        bool expectedCanFail = false;
+        address expectedWeth = address(0xaabbccdd);
+        uint256 expectedValue = 0x45;
+
+        bytes memory encoded = BBCEncoder.encodeDepositWETH(expectedCanFail, expectedWeth, expectedValue);
+
+        (bool canFail, WETH weth, uint256 value) = decoder.decodeDepositWETH(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(WETH.unwrap(weth), expectedWeth);
+        assertEq(value, expectedValue);
     }
 }

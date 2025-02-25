@@ -7,6 +7,7 @@ import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { ERC721 } from "src/types/protocols/ERC721.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
+import { WETH } from "src/types/protocols/WETH.sol";
 
 // ## Decoder
 //
@@ -221,6 +222,36 @@ library BBCDecoder {
             nextPtr := add(nextPtr, 0x01)
 
             tokenId := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
+        }
+    }
+
+    function decodeDepositWETH(Ptr ptr) internal pure returns (
+        Ptr nextPtr,
+        bool canFail,
+        WETH weth,
+        uint256 value
+    ) {
+        assembly {
+            let nextByteLen, nextBitShift
+            nextPtr := ptr
+
+            canFail := shr(u8Shr, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, 0x01)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            weth := shr(nextBitShift, calldataload(nextPtr))
+
+            nextPtr := add(nextPtr, nextByteLen)
+            nextByteLen := shr(u8Shr, calldataload(nextPtr))
+            nextBitShift := sub(0x0100, mul(0x08, nextByteLen))
+            nextPtr := add(nextPtr, 0x01)
+
+            value := shr(nextBitShift, calldataload(nextPtr))
 
             nextPtr := add(nextPtr, nextByteLen)
         }

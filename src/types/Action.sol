@@ -6,6 +6,7 @@ import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { ERC721 } from "src/types/protocols/ERC721.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
+import { WETH } from "src/types/protocols/WETH.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
 
 enum Action {
@@ -18,8 +19,8 @@ enum Action {
     TransferFromERC721,
     TransferERC6909,
     TransferFromERC6909,
-    WrapWETH,
-    UnwrapWETH
+    DepositWETH,
+    WithdrawWETH
 }
 
 using { execute } for Action global;
@@ -77,9 +78,15 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
         revert("todo");
     } else if (action == Action.TransferFromERC6909) {
         revert("todo");
-    } else if (action == Action.WrapWETH) {
-        revert("todo");
-    } else if (action == Action.UnwrapWETH) {
+    } else if (action == Action.DepositWETH) {
+        bool canFail;
+        WETH weth;
+        uint256 value;
+
+        (ptr, canFail, weth, value) = BBCDecoder.decodeDepositWETH(ptr);
+
+        success = weth.deposit(value) || canFail;
+    } else if (action == Action.WithdrawWETH) {
         revert("todo");
     } else {
         success = false;

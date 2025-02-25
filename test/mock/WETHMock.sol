@@ -11,17 +11,21 @@ contract WETHMock {
     event Deposit(address indexed account, uint value);
     event Withdrawal(address indexed account, uint value);
 
-    bool _shouldThrow = false;
+    bool internal _shouldThrow = false;
 
     function setShouldThrow(bool shouldThrow) public {
         _shouldThrow = shouldThrow;
     }
 
     function withdraw(uint256 value) public {
+        require(!_shouldThrow);
+
         emit Withdrawal(msg.sender, value);
     }
 
     receive() external payable {
+        require(!_shouldThrow);
+
         emit Deposit(msg.sender, msg.value);
     }
 }

@@ -6,6 +6,7 @@ import { Test } from "lib/forge-std/src/Test.sol";
 import { ERC20Mock } from "test/mock/ERC20Mock.sol";
 import { ERC721Mock } from "test/mock/ERC721Mock.sol";
 import { UniV2PairMock } from "test/mock/UniV2PairMock.sol";
+import { WETHMock, wethBytecode } from "test/mock/WETHMock.sol";
 
 import { LotusRouter } from "src/LotusRouter.sol";
 import { BBCEncoder } from "src/util/BBCEncoder.sol";
@@ -16,8 +17,14 @@ function takeAction(LotusRouter lotus, bytes memory data) returns (bool success)
     (success,) = address(lotus).call(payload);
 }
 
+function takeActionWithValue(LotusRouter lotus, uint256 value, bytes memory data) returns (bool success) {
+    bytes memory payload = abi.encodePacked(uint32(0x19ff8034), data);
+
+    (success,) = address(lotus).call{value:value}(payload);
+}
+
 contract LotusRouterTest is Test {
-    using { takeAction } for LotusRouter;
+    using { takeAction, takeActionWithValue } for LotusRouter;
 
     LotusRouter lotus;
     UniV2PairMock univ2_0;
@@ -26,6 +33,7 @@ contract LotusRouterTest is Test {
     ERC20Mock erc20_1;
     ERC721Mock erc721_0;
     ERC721Mock erc721_1;
+    WETHMock weth;
 
     function setUp() public {
         lotus = new LotusRouter();
@@ -35,7 +43,10 @@ contract LotusRouterTest is Test {
         erc20_1 = new ERC20Mock();
         erc721_0 = new ERC721Mock();
         erc721_1 = new ERC721Mock();
+        weth = new WETHMock();
     }
+
+    // -- UNIV2 ------------------------------------------------------------------------------------
 
     function testSwapUniV2Single() public {
         bool canFail = false;
@@ -192,6 +203,8 @@ contract LotusRouterTest is Test {
 
         assertTrue(success);
     }
+
+    // -- ERC20 ------------------------------------------------------------------------------------
 
     function testTransferERC20Single() public {
         bool canFail = false;
@@ -682,6 +695,8 @@ contract LotusRouterTest is Test {
         assertEq(success, callSucceeds);
     }
 
+    // -- ERC721 -----------------------------------------------------------------------------------
+
     function testTransferFromERC721Single() public {
         bool canFail = false;
         address sender = address(0xaabbccdd);
@@ -868,5 +883,174 @@ contract LotusRouterTest is Test {
         );
 
         assertEq(success, !shouldThrow || canFail);
+    }
+
+    // -- WETH -------------------------------------------------------------------------------------
+
+    function testDepositWETHNothing() public {
+        bool canFail = false;
+        uint256 value = 0x00;
+
+        vm.expectCall(
+            address(weth),
+            value,
+            new bytes(0)
+        );
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+        );
+
+        assertTrue(success);
+    }
+
+    function testDepositWETHFromCaller() public {
+        bool canFail = false;
+        uint256 value = 0x01;
+
+        vm.expectCall(
+            address(weth),
+            value,
+            new bytes(0)
+        );
+
+        bool success = lotus.takeActionWithValue(
+            value,
+            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+        );
+
+        assertTrue(success);
+    }
+
+    function testDepositWETHFromBalance() public {
+        bool canFail = false;
+        uint256 value = 0x01;
+
+        vm.deal(address(lotus), value);
+
+        vm.expectCall(
+            address(weth),
+            value,
+            new bytes(0)
+        );
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+        );
+
+        assertTrue(success);
+    }
+
+    function testDepositWETHThrows() public {
+        bool canFail = false;
+        uint256 value = 0x00;
+
+        weth.setShouldThrow(true);
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+        );
+
+        assertFalse(success);
+    }
+
+    function testFuzzDepositWETH(
+        bool canFail,
+        bool shouldThrow,
+        bool fromCaller,
+        uint256 value
+    ) public {
+        address alice = address(0xaaaaaaaa);
+        vm.startPrank(alice);
+
+        weth.setShouldThrow(shouldThrow);
+
+        if (canFail || !shouldThrow) {
+            vm.expectCall(
+                address(weth),
+                value,
+                new bytes(0)
+            );
+        }
+
+        bool success;
+
+        if (fromCaller) {
+            vm.deal(alice, value);
+
+            success = lotus.takeActionWithValue(
+                value,
+                BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+            );
+        } else {
+            vm.deal(address(lotus), value);
+            
+            success = lotus.takeAction(
+                BBCEncoder.encodeDepositWETH(canFail, address(weth), value)
+            );
+        }
+
+        assertEq(success, canFail || !shouldThrow);
+
+        vm.stopPrank();
+    }
+
+    function testWETHSendIsCheaperThanDeposit() public {
+        address alice = address(0xaaaaaa);
+        address cannonWeth = address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+        uint256 value = 0x02;
+        uint256 gasDepositBefore;
+        uint256 gasDepositAfter;
+        uint256 gasSendBefore;
+        uint256 gasSendAfter;
+
+        vm.etch(cannonWeth, wethBytecode());
+        vm.deal(alice, value * 5);
+        vm.startPrank(alice);
+
+        // call weth once to make sure the slot is warm
+        assembly {
+            pop(call(gas(), cannonWeth, value, 0x00, 0x00, 0x00, 0x00))
+        }
+
+        // call deposit then send
+        assembly {
+            // call weth.deposit()
+            mstore(0x00, 0xd0e30db000000000000000000000000000000000000000000000000000000000)
+            gasDepositBefore := gas()
+            pop(call(gas(), cannonWeth, value, 0x00, 0x04, 0x00, 0x00))
+            gasDepositAfter := gas()
+
+            // send ether to weth (no calldata)
+            gasSendBefore := gas()
+            pop(call(gas(), cannonWeth, value, 0x00, 0x00, 0x00, 0x00))
+            gasSendAfter := gas()
+        }
+
+        assertLt(
+            gasSendBefore - gasSendAfter,
+            gasDepositBefore - gasDepositAfter
+        );
+
+        // call send then deposit
+        assembly {
+            // send ether to weth (no calldata)
+            gasSendBefore := gas()
+            pop(call(gas(), cannonWeth, value, 0x00, 0x00, 0x00, 0x00))
+            gasSendAfter := gas()
+
+            // call weth.deposit()
+            mstore(0x00, 0xd0e30db000000000000000000000000000000000000000000000000000000000)
+            gasDepositBefore := gas()
+            pop(call(gas(), cannonWeth, value, 0x00, 0x04, 0x00, 0x00))
+            gasDepositAfter := gas()
+        }
+
+        assertLt(
+            gasSendBefore - gasSendAfter,
+            gasDepositBefore - gasDepositAfter
+        );
+
+        vm.stopPrank();
     }
 }

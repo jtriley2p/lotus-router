@@ -268,6 +268,46 @@ library BBCEncoder {
         return encoded;
     }
 
+    function encodeDepositWETH(
+        bool canFail,
+        address weth,
+        uint256 value
+    ) public pure returns (bytes memory) {
+        Action action = Action.DepositWETH;
+        uint8 wethByteLen = byteLen(weth);
+        uint8 valueByteLen = byteLen(value);
+
+        bytes memory encoded = new bytes(4 + wethByteLen + valueByteLen);
+
+        assembly {
+            let ptr := add(encoded, 0x20)
+
+            mstore(ptr, shl(0xf8, action))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, canFail))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, wethByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, wethByteLen)), weth))
+
+            ptr := add(ptr, wethByteLen)
+
+            mstore(ptr, shl(0xf8, valueByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, valueByteLen)), value))
+        }
+
+        return encoded;
+    }
+
     function byteLen(
         uint256 word
     ) internal pure returns (uint8) {
