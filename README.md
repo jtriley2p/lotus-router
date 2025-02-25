@@ -58,8 +58,8 @@ Batchable actions:
 - [x] Uniswap V2 Swap
 - [ ] Uniswap V3 Swap
 - [ ] Uniswap V4 Swap
-- [ ] ERC20 Transfer
-- [ ] ERC20 TransferFrom
+- [x] ERC20 Transfer
+- [x] ERC20 TransferFrom
 - [ ] ERC721 TransferFrom
 - [ ] ERC6909 Transfer
 - [ ] ERC6909 TransferFrom
