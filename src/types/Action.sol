@@ -5,6 +5,7 @@ import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { ERC721 } from "src/types/protocols/ERC721.sol";
+import { ERC6909 } from "src/types/protocols/ERC6909.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { WETH } from "src/types/protocols/WETH.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
@@ -75,7 +76,15 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
 
         success = token.transferFrom(sender, receiver, amount) || canFail;
     } else if (action == Action.TransferERC6909) {
-        revert("todo");
+        bool canFail;
+        ERC6909 multitoken;
+        address receiver;
+        uint256 tokenId;
+        uint256 amount;
+
+        (ptr, canFail, multitoken, receiver, tokenId, amount) = BBCDecoder.decodeTransferERC6909(ptr);
+
+        success = multitoken.transfer(receiver, tokenId, amount) || canFail;
     } else if (action == Action.TransferFromERC6909) {
         revert("todo");
     } else if (action == Action.DepositWETH) {

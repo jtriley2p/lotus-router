@@ -5,6 +5,7 @@ import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { ERC721 } from "src/types/protocols/ERC721.sol";
+import { ERC6909 } from "src/types/protocols/ERC6909.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { WETH } from "src/types/protocols/WETH.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
@@ -100,6 +101,23 @@ contract BBCDecoderMock {
         }
 
         (, canFail, token, sender, receiver, tokenId) = ptr.decodeTransferFromERC721();
+    }
+
+    function decodeTransferERC6909(
+        bytes calldata encoded
+    )
+        public
+        pure
+        returns (bool canFail, ERC6909 multitoken, address receiver, uint256 tokenId, uint256 amount)
+    {
+        Ptr ptr;
+
+        // add 0x01 bc the first byte is the `Action` opcode, it's not decoded
+        assembly {
+            ptr := add(0x01, encoded.offset)
+        }
+
+        (, canFail, multitoken, receiver, tokenId, amount) = ptr.decodeTransferERC6909();
     }
 
     function decodeDepositWETH(

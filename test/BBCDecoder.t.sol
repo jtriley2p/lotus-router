@@ -9,6 +9,7 @@ import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
 import { ERC721 } from "src/types/protocols/ERC721.sol";
+import { ERC6909 } from "src/types/protocols/ERC6909.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { WETH } from "src/types/protocols/WETH.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
@@ -209,6 +210,48 @@ contract BBCDecoderTest is Test {
         assertEq(sender, expectedSender);
         assertEq(receiver, expectedReceiver);
         assertEq(tokenId, expectedTokenId);
+    }
+
+    function testDecodeTransferERC6909() public view {
+        bool expectedCanFail = false;
+        address expectedMultitoken = address(0xaabbccdd);
+        address expectedReceiver = address(0xeeffaabb);
+        uint256 expectedTokenId = 0x45;
+        uint256 expectedAmount = 0x46;
+
+        bytes memory encoded = BBCEncoder.encodeTransferERC6909(
+            expectedCanFail, expectedMultitoken, expectedReceiver, expectedTokenId, expectedAmount
+        );
+
+        (bool canFail, ERC6909 multitoken, address receiver, uint256 tokenId, uint256 amount) =
+            decoder.decodeTransferERC6909(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC6909.unwrap(multitoken), expectedMultitoken);
+        assertEq(receiver, expectedReceiver);
+        assertEq(tokenId, expectedTokenId);
+        assertEq(amount, expectedAmount);
+    }
+
+    function testFuzzDecodeTransferERC6909(
+        bool expectedCanFail,
+        address expectedMultitoken,
+        address expectedReceiver,
+        uint256 expectedTokenId,
+        uint256 expectedAmount
+    ) public view {
+        bytes memory encoded = BBCEncoder.encodeTransferERC6909(
+            expectedCanFail, expectedMultitoken, expectedReceiver, expectedTokenId, expectedAmount
+        );
+
+        (bool canFail, ERC6909 multitoken, address receiver, uint256 tokenId, uint256 amount) =
+            decoder.decodeTransferERC6909(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC6909.unwrap(multitoken), expectedMultitoken);
+        assertEq(receiver, expectedReceiver);
+        assertEq(tokenId, expectedTokenId);
+        assertEq(amount, expectedAmount);
     }
 
     function testDecodeDepositWETH() public view {
