@@ -88,7 +88,17 @@ function execute(Action action, Ptr ptr) returns (Ptr, bool success) {
 
         success = multitoken.transfer(receiver, tokenId, amount) || canFail;
     } else if (action == Action.TransferFromERC6909) {
-        revert("todo");
+        bool canFail;
+        ERC6909 multitoken;
+        address sender;
+        address receiver;
+        uint256 tokenId;
+        uint256 amount;
+
+        (ptr, canFail, multitoken, sender, receiver, tokenId, amount) =
+            BBCDecoder.decodeTransferFromERC6909(ptr);
+
+        success = multitoken.transferFrom(sender, receiver, tokenId, amount) || canFail;
     } else if (action == Action.DepositWETH) {
         bool canFail;
         WETH weth;

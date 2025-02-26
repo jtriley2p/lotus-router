@@ -127,6 +127,30 @@ contract BBCDecoderMock {
         (, canFail, multitoken, receiver, tokenId, amount) = ptr.decodeTransferERC6909();
     }
 
+    function decodeTransferFromERC6909(
+        bytes calldata encoded
+    )
+        public
+        pure
+        returns (
+            bool canFail,
+            ERC6909 multitoken,
+            address sender,
+            address receiver,
+            uint256 tokenId,
+            uint256 amount
+        )
+    {
+        Ptr ptr;
+
+        // add 0x01 bc the first byte is the `Action` opcode, it's not decoded
+        assembly {
+            ptr := add(0x01, encoded.offset)
+        }
+
+        (, canFail, multitoken, sender, receiver, tokenId, amount) = ptr.decodeTransferFromERC6909();
+    }
+
     function decodeDepositWETH(
         bytes calldata encoded
     ) public pure returns (bool canFail, WETH weth, uint256 value) {

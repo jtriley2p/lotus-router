@@ -255,6 +255,52 @@ contract BBCDecoderTest is Test {
         assertEq(amount, expectedAmount);
     }
 
+    function testDecodeTransferFromERC6909() public view {
+        bool expectedCanFail = false;
+        address expectedMultitoken = address(0xaabbccdd);
+        address expectedSender = address(0xeeffaabb);
+        address expectedReceiver = address(0xccddeeff);
+        uint256 expectedTokenId = 0x45;
+        uint256 expectedAmount = 0x46;
+
+        bytes memory encoded = BBCEncoder.encodeTransferFromERC6909(
+            expectedCanFail, expectedMultitoken, expectedSender, expectedReceiver, expectedTokenId, expectedAmount
+        );
+
+        (bool canFail, ERC6909 multitoken, address sender, address receiver, uint256 tokenId, uint256 amount) =
+            decoder.decodeTransferFromERC6909(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC6909.unwrap(multitoken), expectedMultitoken);
+        assertEq(sender, expectedSender);
+        assertEq(receiver, expectedReceiver);
+        assertEq(tokenId, expectedTokenId);
+        assertEq(amount, expectedAmount);
+    }
+
+    function testFuzzDecodeTransferFromERC6909(
+        bool expectedCanFail,
+        address expectedMultitoken,
+        address expectedSender,
+        address expectedReceiver,
+        uint256 expectedTokenId,
+        uint256 expectedAmount
+    ) public view {
+        bytes memory encoded = BBCEncoder.encodeTransferFromERC6909(
+            expectedCanFail, expectedMultitoken, expectedSender, expectedReceiver, expectedTokenId, expectedAmount
+        );
+
+        (bool canFail, ERC6909 multitoken, address sender, address receiver, uint256 tokenId, uint256 amount) =
+            decoder.decodeTransferFromERC6909(encoded);
+
+        assertEq(canFail, expectedCanFail);
+        assertEq(ERC6909.unwrap(multitoken), expectedMultitoken);
+        assertEq(sender, expectedSender);
+        assertEq(receiver, expectedReceiver);
+        assertEq(tokenId, expectedTokenId);
+        assertEq(amount, expectedAmount);
+    }
+
     function testDecodeDepositWETH() public view {
         bool expectedCanFail = false;
         address expectedWeth = address(0xaabbccdd);

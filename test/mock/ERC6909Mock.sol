@@ -28,4 +28,17 @@ contract ERC6909Mock {
 
         return _result;
     }
+
+    function transferFrom(
+        address sender,
+        address receiver,
+        uint256 tokenId,
+        uint256 amount
+    ) public returns (bool) {
+        require(!_shouldThrow);
+
+        emit Transfer(msg.sender, sender, receiver, tokenId, amount);
+
+        return _result;
+    }
 }

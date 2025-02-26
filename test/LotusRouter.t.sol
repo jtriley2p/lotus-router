@@ -1113,6 +1113,226 @@ contract LotusRouterTest is Test {
         assertEq(success, !shouldThrow && result || canFail);
     }
 
+    function testTransferFromERC6909Single() public {
+        bool canFail = false;
+        address sender = address(0xaabbccdd);
+        address receiver = address(0xeeffaabb);
+        uint256 tokenId = 0x45;
+        uint256 amount = 0x46;
+
+        vm.expectCall(
+            address(erc6909_0), abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
+        );
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+        );
+
+        assertTrue(success);
+    }
+
+    function testTransferFromERC6909SingleThrows() public {
+        bool canFail = false;
+        address sender = address(0xaabbccdd);
+        address receiver = address(0xeeffaabb);
+        uint256 tokenId = 0x45;
+        uint256 amount = 0x46;
+
+        erc6909_0.setShouldThrow(true);
+
+        vm.expectCall(
+            address(erc6909_0), abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
+        );
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+        );
+
+        assertFalse(success);
+    }
+
+    function testTransferFromERC6909SingleReturnsFalse() public {
+        bool canFail = false;
+        address sender = address(0xaabbccdd);
+        address receiver = address(0xeeffaabb);
+        uint256 tokenId = 0x45;
+        uint256 amount = 0x46;
+
+        erc6909_0.setResult(false);
+
+        vm.expectCall(
+            address(erc6909_0), abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
+        );
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+        );
+
+        assertFalse(success);
+    }
+
+    function testFuzzTransferFromERC6909Single(
+        bool canFail,
+        bool result,
+        bool shouldThrow,
+        address sender,
+        address receiver,
+        uint256 tokenId,
+        uint256 amount
+    ) public {
+        erc6909_0.setResult(result);
+        erc6909_0.setShouldThrow(shouldThrow);
+
+        if (!shouldThrow && result || canFail) {
+            vm.expectCall(
+                address(erc6909_0),
+                abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
+            );
+        }
+
+        bool success = lotus.takeAction(
+            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+        );
+
+        assertEq(success, !shouldThrow && result || canFail);
+    }
+
+    function testTransferFromERC6909Chain() public {
+        bool canFail = false;
+        address sender_0 = address(0xaabbccdd);
+        address receiver_0 = address(0xeeffaabb);
+        uint256 tokenId_0 = 0x45;
+        uint256 amount_0 = 0x46;
+
+        address sender_1 = address(0xccddeeff);
+        address receiver_1 = address(0xaabbccdd);
+        uint256 tokenId_1 = 0x47;
+        uint256 amount_1 = 0x48;
+
+        vm.expectCall(
+            address(erc6909_0),
+            abi.encodeCall(ERC6909Mock.transferFrom, (sender_0, receiver_0, tokenId_0, amount_0))
+        );
+
+        vm.expectCall(
+            address(erc6909_1),
+            abi.encodeCall(ERC6909Mock.transferFrom, (sender_1, receiver_1, tokenId_1, amount_1))
+        );
+
+        bool success = lotus.takeAction(
+            abi.encodePacked(
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_0), sender_0, receiver_0, tokenId_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_1), sender_1, receiver_1, tokenId_1, amount_1
+                )
+            )
+        );
+
+        assertTrue(success);
+    }
+
+    function testTransferFromERC6909ChainThrows() public {
+        bool canFail = false;
+        address sender_0 = address(0xaabbccdd);
+        address receiver_0 = address(0xeeffaabb);
+        uint256 tokenId_0 = 0x45;
+        uint256 amount_0 = 0x46;
+
+        address sender_1 = address(0xccddeeff);
+        address receiver_1 = address(0xaabbccdd);
+        uint256 tokenId_1 = 0x47;
+        uint256 amount_1 = 0x48;
+
+        erc6909_0.setShouldThrow(true);
+
+        bool success = lotus.takeAction(
+            abi.encodePacked(
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_0), sender_0, receiver_0, tokenId_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_1), sender_1, receiver_1, tokenId_1, amount_1
+                )
+            )
+        );
+
+        assertFalse(success);
+    }
+
+    function testTransferFromERC6909ChainReturnsFalse() public {
+        bool canFail = false;
+        address sender_0 = address(0xaabbccdd);
+        address receiver_0 = address(0xeeffaabb);
+        uint256 tokenId_0 = 0x45;
+        uint256 amount_0 = 0x46;
+
+        address sender_1 = address(0xccddeeff);
+        address receiver_1 = address(0xaabbccdd);
+        uint256 tokenId_1 = 0x47;
+        uint256 amount_1 = 0x48;
+
+        erc6909_0.setResult(false);
+
+        bool success = lotus.takeAction(
+            abi.encodePacked(
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_0), sender_0, receiver_0, tokenId_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_1), sender_1, receiver_1, tokenId_1, amount_1
+                )
+            )
+        );
+
+        assertFalse(success);
+    }
+
+    function testFuzzTransferFromERC6909Chain(
+        bool canFail,
+        bool result,
+        bool shouldThrow,
+        address sender_0,
+        address receiver_0,
+        uint256 tokenId_0,
+        uint256 amount_0,
+        address sender_1,
+        address receiver_1,
+        uint256 tokenId_1,
+        uint256 amount_1
+    ) public {
+        erc6909_0.setResult(result);
+        erc6909_0.setShouldThrow(shouldThrow);
+        erc6909_1.setResult(result);
+        erc6909_1.setShouldThrow(shouldThrow);
+
+        if (!shouldThrow && result || canFail) {
+            vm.expectCall(
+                address(erc6909_0),
+                abi.encodeCall(ERC6909Mock.transferFrom, (sender_0, receiver_0, tokenId_0, amount_0))
+            );
+
+            vm.expectCall(
+                address(erc6909_1),
+                abi.encodeCall(ERC6909Mock.transferFrom, (sender_1, receiver_1, tokenId_1, amount_1))
+            );
+        }
+
+        bool success = lotus.takeAction(
+            abi.encodePacked(
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_0), sender_0, receiver_0, tokenId_0, amount_0
+                ),
+                BBCEncoder.encodeTransferFromERC6909(
+                    canFail, address(erc6909_1), sender_1, receiver_1, tokenId_1, amount_1
+                )
+            )
+        );
+
+        assertEq(success, !shouldThrow && result || canFail);
+    }
+
     // -- WETH -------------------------------------------------------------------------------------
 
     function testDepositWETHNothing() public {

@@ -329,6 +329,77 @@ library BBCEncoder {
         return encoded;
     }
 
+    function encodeTransferFromERC6909(
+        bool canFail,
+        address multitoken,
+        address sender,
+        address receiver,
+        uint256 tokenId,
+        uint256 amount
+    ) internal pure returns (bytes memory) {
+        Action action = Action.TransferFromERC6909;
+        uint8 multitokenByteLen = byteLen(multitoken);
+        uint8 senderByteLen = byteLen(sender);
+        uint8 receiverByteLen = byteLen(receiver);
+        uint8 tokenIdByteLen = byteLen(tokenId);
+        uint8 amountByteLen = byteLen(amount);
+
+        bytes memory encoded =
+            new bytes(7 + multitokenByteLen + senderByteLen + receiverByteLen + tokenIdByteLen + amountByteLen);
+
+        assembly ("memory-safe") {
+            let ptr := add(encoded, 0x20)
+
+            mstore(ptr, shl(0xf8, action))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, canFail))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(0xf8, multitokenByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, multitokenByteLen)), multitoken))
+
+            ptr := add(ptr, multitokenByteLen)
+
+            mstore(ptr, shl(0xf8, senderByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, senderByteLen)), sender))
+
+            ptr := add(ptr, senderByteLen)
+
+            mstore(ptr, shl(0xf8, receiverByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, receiverByteLen)), receiver))
+
+            ptr := add(ptr, receiverByteLen)
+
+            mstore(ptr, shl(0xf8, tokenIdByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, tokenIdByteLen)), tokenId))
+
+            ptr := add(ptr, tokenIdByteLen)
+
+            mstore(ptr, shl(0xf8, amountByteLen))
+
+            ptr := add(ptr, 0x01)
+
+            mstore(ptr, shl(sub(0x0100, mul(0x08, amountByteLen)), amount))
+        }
+
+        return encoded;
+    }
+
     function encodeDepositWETH(
         bool canFail,
         address weth,
