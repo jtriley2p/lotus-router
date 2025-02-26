@@ -264,11 +264,22 @@ contract BBCDecoderTest is Test {
         uint256 expectedAmount = 0x46;
 
         bytes memory encoded = BBCEncoder.encodeTransferFromERC6909(
-            expectedCanFail, expectedMultitoken, expectedSender, expectedReceiver, expectedTokenId, expectedAmount
+            expectedCanFail,
+            expectedMultitoken,
+            expectedSender,
+            expectedReceiver,
+            expectedTokenId,
+            expectedAmount
         );
 
-        (bool canFail, ERC6909 multitoken, address sender, address receiver, uint256 tokenId, uint256 amount) =
-            decoder.decodeTransferFromERC6909(encoded);
+        (
+            bool canFail,
+            ERC6909 multitoken,
+            address sender,
+            address receiver,
+            uint256 tokenId,
+            uint256 amount
+        ) = decoder.decodeTransferFromERC6909(encoded);
 
         assertEq(canFail, expectedCanFail);
         assertEq(ERC6909.unwrap(multitoken), expectedMultitoken);
@@ -287,11 +298,22 @@ contract BBCDecoderTest is Test {
         uint256 expectedAmount
     ) public view {
         bytes memory encoded = BBCEncoder.encodeTransferFromERC6909(
-            expectedCanFail, expectedMultitoken, expectedSender, expectedReceiver, expectedTokenId, expectedAmount
+            expectedCanFail,
+            expectedMultitoken,
+            expectedSender,
+            expectedReceiver,
+            expectedTokenId,
+            expectedAmount
         );
 
-        (bool canFail, ERC6909 multitoken, address sender, address receiver, uint256 tokenId, uint256 amount) =
-            decoder.decodeTransferFromERC6909(encoded);
+        (
+            bool canFail,
+            ERC6909 multitoken,
+            address sender,
+            address receiver,
+            uint256 tokenId,
+            uint256 amount
+        ) = decoder.decodeTransferFromERC6909(encoded);
 
         assertEq(canFail, expectedCanFail);
         assertEq(ERC6909.unwrap(multitoken), expectedMultitoken);

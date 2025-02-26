@@ -1121,11 +1121,14 @@ contract LotusRouterTest is Test {
         uint256 amount = 0x46;
 
         vm.expectCall(
-            address(erc6909_0), abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
+            address(erc6909_0),
+            abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
         );
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+            BBCEncoder.encodeTransferFromERC6909(
+                canFail, address(erc6909_0), sender, receiver, tokenId, amount
+            )
         );
 
         assertTrue(success);
@@ -1141,11 +1144,14 @@ contract LotusRouterTest is Test {
         erc6909_0.setShouldThrow(true);
 
         vm.expectCall(
-            address(erc6909_0), abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
+            address(erc6909_0),
+            abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
         );
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+            BBCEncoder.encodeTransferFromERC6909(
+                canFail, address(erc6909_0), sender, receiver, tokenId, amount
+            )
         );
 
         assertFalse(success);
@@ -1161,11 +1167,14 @@ contract LotusRouterTest is Test {
         erc6909_0.setResult(false);
 
         vm.expectCall(
-            address(erc6909_0), abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
+            address(erc6909_0),
+            abi.encodeCall(ERC6909Mock.transferFrom, (sender, receiver, tokenId, amount))
         );
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+            BBCEncoder.encodeTransferFromERC6909(
+                canFail, address(erc6909_0), sender, receiver, tokenId, amount
+            )
         );
 
         assertFalse(success);
@@ -1191,7 +1200,9 @@ contract LotusRouterTest is Test {
         }
 
         bool success = lotus.takeAction(
-            BBCEncoder.encodeTransferFromERC6909(canFail, address(erc6909_0), sender, receiver, tokenId, amount)
+            BBCEncoder.encodeTransferFromERC6909(
+                canFail, address(erc6909_0), sender, receiver, tokenId, amount
+            )
         );
 
         assertEq(success, !shouldThrow && result || canFail);
@@ -1310,12 +1321,16 @@ contract LotusRouterTest is Test {
         if (!shouldThrow && result || canFail) {
             vm.expectCall(
                 address(erc6909_0),
-                abi.encodeCall(ERC6909Mock.transferFrom, (sender_0, receiver_0, tokenId_0, amount_0))
+                abi.encodeCall(
+                    ERC6909Mock.transferFrom, (sender_0, receiver_0, tokenId_0, amount_0)
+                )
             );
 
             vm.expectCall(
                 address(erc6909_1),
-                abi.encodeCall(ERC6909Mock.transferFrom, (sender_1, receiver_1, tokenId_1, amount_1))
+                abi.encodeCall(
+                    ERC6909Mock.transferFrom, (sender_1, receiver_1, tokenId_1, amount_1)
+                )
             );
         }
 
