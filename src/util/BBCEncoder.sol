@@ -152,7 +152,7 @@ library BBCEncoder {
         address sender,
         address receiver,
         uint256 amount
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         Action action = Action.TransferFromERC20;
         uint8 tokenByteLen = byteLen(token);
         uint8 senderByteLen = byteLen(sender);
@@ -213,7 +213,7 @@ library BBCEncoder {
         address sender,
         address receiver,
         uint256 tokenId
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         Action action = Action.TransferFromERC20;
         uint8 tokenByteLen = byteLen(token);
         uint8 senderByteLen = byteLen(sender);
@@ -274,7 +274,7 @@ library BBCEncoder {
         address receiver,
         uint256 tokenId,
         uint256 amount
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         Action action = Action.TransferERC6909;
         uint8 multitokenByteLen = byteLen(multitoken);
         uint8 receiverByteLen = byteLen(receiver);
@@ -334,7 +334,7 @@ library BBCEncoder {
         bool canFail,
         address weth,
         uint256 value
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         Action action = Action.DepositWETH;
         uint8 wethByteLen = byteLen(weth);
         uint8 valueByteLen = byteLen(value);
@@ -374,7 +374,7 @@ library BBCEncoder {
         bool canFail,
         address weth,
         uint256 value
-    ) public pure returns (bytes memory) {
+    ) internal pure returns (bytes memory) {
         Action action = Action.WithdrawWETH;
         uint8 wethByteLen = byteLen(weth);
         uint8 valueByteLen = byteLen(value);
