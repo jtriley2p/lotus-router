@@ -4,8 +4,9 @@ pragma solidity 0.8.28;
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
-import { ERC721 } from "src/types/protocols/ERC721.sol";
+
 import { ERC6909 } from "src/types/protocols/ERC6909.sol";
+import { ERC721 } from "src/types/protocols/ERC721.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { WETH } from "src/types/protocols/WETH.sol";
 
@@ -233,14 +234,20 @@ library BBCDecoder {
         }
     }
 
-    function decodeTransferERC6909(Ptr ptr) internal pure returns (
-        Ptr nextPtr,
-        bool canFail,
-        ERC6909 multitoken,
-        address receiver,
-        uint256 tokenId,
-        uint256 amount
-    ) {
+    function decodeTransferERC6909(
+        Ptr ptr
+    )
+        internal
+        pure
+        returns (
+            Ptr nextPtr,
+            bool canFail,
+            ERC6909 multitoken,
+            address receiver,
+            uint256 tokenId,
+            uint256 amount
+        )
+    {
         assembly {
             let nextByteLen, nextBitShift
             nextPtr := ptr

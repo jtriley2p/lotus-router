@@ -4,8 +4,9 @@ pragma solidity 0.8.28;
 import { BytesCalldata } from "src/types/BytesCalldata.sol";
 import { Ptr } from "src/types/PayloadPointer.sol";
 import { ERC20 } from "src/types/protocols/ERC20.sol";
-import { ERC721 } from "src/types/protocols/ERC721.sol";
+
 import { ERC6909 } from "src/types/protocols/ERC6909.sol";
+import { ERC721 } from "src/types/protocols/ERC721.sol";
 import { UniV2Pair } from "src/types/protocols/UniV2Pair.sol";
 import { WETH } from "src/types/protocols/WETH.sol";
 import { BBCDecoder } from "src/util/BBCDecoder.sol";
@@ -108,7 +109,13 @@ contract BBCDecoderMock {
     )
         public
         pure
-        returns (bool canFail, ERC6909 multitoken, address receiver, uint256 tokenId, uint256 amount)
+        returns (
+            bool canFail,
+            ERC6909 multitoken,
+            address receiver,
+            uint256 tokenId,
+            uint256 amount
+        )
     {
         Ptr ptr;
 
