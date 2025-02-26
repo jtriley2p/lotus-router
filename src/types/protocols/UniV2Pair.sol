@@ -57,20 +57,20 @@ function swap(
 
         data := add(data, 0x04)
 
-        mstore(add(0x00, fmp), swapSelector)
+        mstore(add(fmp, 0x00), swapSelector)
 
-        mstore(add(0x04, fmp), amount0Out)
+        mstore(add(fmp, 0x04), amount0Out)
 
-        mstore(add(0x24, fmp), amount1Out)
+        mstore(add(fmp, 0x24), amount1Out)
 
-        mstore(add(0x44, fmp), to)
+        mstore(add(fmp, 0x44), to)
 
-        mstore(add(0x64, fmp), 0x80)
+        mstore(add(fmp, 0x64), 0x80)
 
-        mstore(add(0x84, fmp), dataLen)
+        mstore(add(fmp, 0x84), dataLen)
 
-        calldatacopy(add(0xa4, fmp), data, dataLen)
+        calldatacopy(add(fmp, 0xa4), data, dataLen)
 
-        success := call(gas(), pair, 0x00, fmp, add(0xc4, dataLen), 0x00, 0x00)
+        success := call(gas(), pair, 0x00, fmp, add(dataLen, 0xc4), 0x00, 0x00)
     }
 }
